@@ -21,3 +21,10 @@
 
 No runtime code, profile, OPT, production, database, credentials or external
 publication has been changed in this planning step.
+
+## Workflow note
+
+- The first push command had no upstream because the new baseline branch was
+  created from origin/main without tracking configuration. A normal push -u
+  origin docs/issue-1-baseline-dsh-test-pilot completed successfully; no force
+  operation was used.
