@@ -13,15 +13,23 @@
   workspace change detector, idempotency state and diagnostic tools.
 - Added 21 unit/contract tests. Current result: 21 passed, 0 failed,
   0 cancelled; git diff --check is clean.
-- Automatic report uses plugin-owned test-pilot/report events until a safe
-  post-turn chat bridge is confirmed in real composition.
+- Verified native Session.append report bridge in a real Cordis Context: automatic
+  runs append one concise assistant/message after turn/end when supported, while
+  plugin-owned report events and diagnostic tools remain fallbacks.
 
 ## Next
 
-- Add real Loader/Cordis composition test using the shipped package entry.
-- Verify actual tool and settings registration against current DSH.
-- Build exact package artifact and install it temporarily on MiniPC.
-- Run the isolated test profile matrix and record evidence.
+- Run the exact package artifact through the isolated MiniPC DSH profile.
+- Verify settings-card behavior in the shipped profile and record smoke evidence.
+- Remove the temporary test installation and close the acceptance gate.
+
+## Current blocker
+
+The private Gitea archive URL redirects unauthenticated MiniPC requests to
+/user/login. No token was copied, no source was transferred manually, and the
+MiniPC profile was not changed. An approved Git/Gitea artifact route or owner
+permission for a read-only credential on the test server is required before
+installation.
 
 ## Evidence
 
