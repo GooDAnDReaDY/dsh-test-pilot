@@ -10,7 +10,7 @@ DEV: /mnt/external/Project/DEV/dsh-test-pilot
 
 ## Статус
 
-Design/specification baseline committed; runtime implementation has not started.
+MVP runtime baseline implemented; real-composition and isolated-server gates remain.
 
 ## Документация
 
@@ -18,5 +18,6 @@ Design/specification baseline committed; runtime implementation has not started.
 - docs/plans/001-product-spec.md — ТЗ и roadmap.
 - docs/design/DESIGN.md — дизайн-контракт.
 - docs/research/reuse-first.md — reuse-first research.
+- docs/adr/0001-mvp-contract.md — решение по runtime-контракту MVP.
 
 Публичная архитектура с первого коммита; до отдельной команды владельца GitHub/npm publication не выполняется. Контракты DSH проверяются документацией и real-composition tests. Никаких force-операций, silent auto-fix, произвольного network egress или изменений чужих плагинов.

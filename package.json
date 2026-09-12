@@ -1,0 +1,29 @@
+{
+  "name": "@goodandready/dsh-test-pilot",
+  "version": "0.1.0",
+  "description": "Automatic bounded test runs after completed DeepSeek Harness turns.",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": { ".": "./lib/index.js", "./package.json": "./package.json" },
+  "files": ["lib/", "cordis.patch.yml", "README.md", "README.ru.md", "README.zh.md", "docs/", "LICENSE"],
+  "scripts": { "test": "node --test test/*.test.mjs" },
+  "keywords": ["dsh", "dsh-plugin", "deepseek-harness", "testing", "pytest", "quality-gate"],
+  "repository": { "type": "git", "url": "https://github.com/GooDAnDReaDY/dsh-test-pilot.git" },
+  "homepage": "https://github.com/GooDAnDReaDY/dsh-test-pilot",
+  "bugs": { "url": "https://github.com/GooDAnDReaDY/dsh-test-pilot/issues" },
+  "license": "MIT",
+  "publishConfig": { "access": "public" },
+  "dsh": { "bundle": { "patch": "./cordis.patch.yml" }, "client": { "platform": "web", "inject": [] } },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "^4.0.1",
+    "@deepseek-ai/dsh-settings": ">=0.1.2-alpha.1 <1.0.0",
+    "@deepseek-ai/dsh-subprocess": ">=0.1.2-alpha.1 <1.0.0",
+    "@deepseek-ai/dsh-tools": ">=0.1.2-alpha.1 <1.0.0",
+    "@deepseek-ai/schemastery": "^3.18.1"
+  },
+  "peerDependenciesMeta": {
+    "@deepseek-ai/dsh-settings": { "optional": true },
+    "@deepseek-ai/dsh-tools": { "optional": true },
+    "@deepseek-ai/schemastery": { "optional": true }
+  }
+}

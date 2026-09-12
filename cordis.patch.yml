@@ -1,0 +1,3 @@
+- insert:
+    - id: dsh-test-pilot
+      name: '@goodandready/dsh-test-pilot'
