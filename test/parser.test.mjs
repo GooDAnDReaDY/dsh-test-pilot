@@ -48,7 +48,7 @@ test('parses a Jest-style summary', () => {
 });
 test('classifies timeout, malformed output and empty output', () => {
   assert.equal(parseTestOutput({ runner: 'pytest', timedOut: true, exitCode: null }).status, 'timeout');
-  assert.equal(parseTestOutput({ runner: 'pytest', output: 'garbage', exitCode: 0 }).status, 'passed');
+  assert.equal(parseTestOutput({ runner: 'pytest', output: 'garbage', exitCode: 0 }).status, 'error');
   assert.equal(parseTestOutput({ runner: 'pytest', output: '', exitCode: 0 }).status, 'no-tests');
 });
 test('report is concise and bounded to five failures', () => {
