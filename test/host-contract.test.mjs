@@ -8,6 +8,7 @@ test('host uses the confirmed native event and bounded subprocess service', () =
   assert.match(source, /ctx\.subprocess/);
   assert.match(source, /workspaceHasChanges/);
   assert.match(source, /test-pilot\/report/);
+  assert.match(source, /session\.append\('assistant\/message'/);
 });
 test('MVP does not contain self-healing or automatic git mutation', () => {
   assert.doesNotMatch(source, /agents\.create|git\s+(commit|push)|repair turn/i);

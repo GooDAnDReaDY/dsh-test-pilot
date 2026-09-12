@@ -35,12 +35,13 @@ the acceptance gate must boot the real entry path.
 ## Report boundary
 
 Automatic runs emit the plugin-owned test-pilot/report event with bounded
-result and formatted text. The diagnostic test_pilot_last_run tool returns the
-same report directly in chat. The plugin does not append a fake assistant
-message after turn/end: the current host contract does not provide a confirmed
-safe post-turn assistant-message API, and doing that would risk recursive turns
-or invalid session surface events. A native report bridge can consume the
-plugin-owned event in a later UI milestone.
+result and formatted text. When the native session exposes append, the plugin
+also appends one concise assistant/message report with surfaceOp: append after
+turn/end; this is a session-log surface update, not a new agent turn, and the
+listener ignores assistant-message events. If the session does not expose that
+API or rejects the append, the bounded event and diagnostic
+test_pilot_last_run tool remain available and the test run is not failed solely
+because chat rendering is unavailable.
 
 ## Rejected alternatives
 

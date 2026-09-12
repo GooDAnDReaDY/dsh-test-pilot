@@ -8,7 +8,9 @@ The plugin listens to the native session/event bus and handles turn/end. It
 checks whether git reports workspace changes, runs a configured executable
 through ctx.subprocess.spawn without a shell, bounds stdout/stderr, supports
 timeout and cancellation, redacts common secret-shaped values, normalizes a
-pytest result, stores the latest result in memory and emits test-pilot/report.
+pytest result, stores the latest result in memory, appends a concise assistant
+report to the current session when the native session supports it, and emits
+test-pilot/report.
 
 The diagnostic tools test_pilot_last_run and test_pilot_run return a bounded
 human-readable report and structured JSON in chat.
