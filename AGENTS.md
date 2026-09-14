@@ -10,7 +10,7 @@ DEV: /mnt/external/Project/DEV/dsh-test-pilot
 
 ## Статус
 
-MVP runtime baseline implemented; real-composition and isolated-server gates remain.
+MVP runtime and runner/parser baseline implemented; full Loader/profile and isolated-server gates remain.
 
 ## Документация
 

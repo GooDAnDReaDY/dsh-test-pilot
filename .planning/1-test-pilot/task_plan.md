@@ -12,17 +12,17 @@ does not enter an uncontrolled repair loop.
 - Existing WIP PR: #3.
 - Branch/worktree: docs/issue-1-baseline-dsh-test-pilot.
 - Base: fresh origin/main.
-- Current commit: documentation baseline only; runtime implementation has not
-  started.
+- Current implementation commits: 63b59d0 plus the runner/parser expansion in
+  the current worktree.
 - One block, one branch, one worktree and one PR remain the execution boundary.
 
 ## MVP scope
 
-In scope: one selected runner adapter (pytest or Jest-family, chosen in the
-contract spike), subprocess execution through the verified DSH service,
-bounded stdout/stderr, timeout/cancellation, parser/result contract,
-turn/end listener, duplicate suppression, last-run status and a concise
-user-visible report.
+In scope: configured runner adapters (pytest default plus Jest/Vitest, Go,
+Rust/Cargo, TAP and TypeScript compiler parsing), subprocess execution through
+the verified DSH service, bounded stdout/stderr, timeout/cancellation,
+parser/result contract, turn/end listener, duplicate suppression, last-run
+status and a concise user-visible report.
 
 Out of scope for MVP: self-healing repair turns, commit blocking, test
 generation, persistent history, web dashboard, arbitrary shell evaluation,
@@ -30,31 +30,26 @@ automatic commit/push/deploy and external telemetry.
 
 ## Ordered actions
 
-1. Contract spike: inspect the current DSH host event, subprocess, tools,
-   messaging and lifecycle APIs; choose the first runner based on the real
-   target contract and record an ADR.
-2. Package skeleton: create package.json, cordis.patch.yml, lib host entry,
-   test entry and license using the scoped @goodandready identity. Keep the
-   client half minimal until a real UI is needed.
-3. RED tests for domain contracts: TestRun, Failure, RunnerResult,
-   timeout/cancel/error states, bounded output and report rendering.
-4. GREEN runner adapter: execute argv through the verified subprocess API,
-   normalize output and return exitCode/timedOut/runner/summary/failures.
-5. RED/GREEN parser fixtures: pass, assertion failure, collection/compile
-   error, timeout, malformed output and output truncation.
-6. RED/GREEN event orchestration: subscribe to the verified turn/end event,
-   detect whether code changed, apply idempotency and ensure teardown through
-   ctx.effect or the host lifecycle contract.
-7. Report and state: publish a concise message, retain the latest safe result,
-   expose a diagnostic tool if justified by the host contract, and never
-   include secrets, raw prompts or unbounded output.
-8. Real-composition acceptance: boot a test-only Loader/Cordis composition,
-   trigger the real event path, mock only nondeterministic/external boundaries,
-   and assert the user-visible result.
-9. Exact candidate validation: after the PR is merged only by the normal
-   workflow, build the exact package artifact, install it on the isolated
-   MiniPC DSH test profile, run the full matrix, clean up the test artifact
-   and record evidence.
+1. Contract spike: completed. Native session/event, subprocess, tools,
+   messaging and lifecycle contracts are recorded in the ADR.
+2. Package skeleton: completed with package.json, cordis.patch.yml, host entry,
+   tests, license and the scoped @goodandready identity.
+3. RED/GREEN domain contracts: completed for result, failure, timeout,
+   cancellation, bounded output and report rendering.
+4. GREEN runner adapter: completed through the verified subprocess API with
+   argv, normalization, timeout/cancellation and bounded output.
+5. RED/GREEN parser fixtures: pytest/Jest baseline completed; Go, Rust/Cargo,
+   TAP and TypeScript compiler support is implemented and awaits the deferred
+   test cycle.
+6. RED/GREEN event orchestration: completed with native turn/end listener,
+   changed-workspace detection, idempotency and ctx.effect teardown.
+7. Report and state: completed with concise session message, plugin-owned report
+   event, latest safe result, diagnostic tools, redaction and bounds.
+8. Real composition: Cordis Context/tool/event smoke completed; full Loader
+   profile acceptance remains in the deferred test cycle.
+9. Exact candidate validation: deferred by the explicit user decision to test
+   later; then build the exact artifact, install on isolated MiniPC, run the
+   matrix, clean up and record evidence.
 10. MVP review: update README/docs/index.md/issue/PR/Memory Brain, then stop
     before deploy, version publication or GitHub/npm release.
 

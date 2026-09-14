@@ -1,19 +1,34 @@
 # dsh-test-pilot
 
-## Назначение
+## Purpose
 
-Автоматически проверять код после turn/end, выдавать structured red/green feedback и bounded self-healing.
+Automatically run configured tests after a completed DSH turn and return bounded,
+structured red/green feedback without starting an uncontrolled repair loop.
 
-## Статус
+## Status
 
-Design/specification baseline; runtime implementation has not started.
+MVP runtime and runner/parser baseline implemented. The runner/parser layer
+includes pytest, Jest/Vitest, Go, Rust/Cargo, TAP and TypeScript compiler
+adapters. Full Loader profile validation and isolated MiniPC installation are
+deferred to the later test cycle.
 
-## Документы
+## Documents
 
-- [Product specification and plan](docs/plans/001-product-spec.md)
+- [Product specification and roadmap](docs/plans/001-product-spec.md)
 - [Design contract](docs/design/DESIGN.md)
 - [Reuse-first research](docs/research/reuse-first.md)
+- [MVP runtime ADR](docs/adr/0001-mvp-contract.md)
+- [English README](README.md)
 - [Russian overview](README.ru.md)
 - [中文概览](README.zh.md)
 
-Host service, client slot, tools and settings will be recorded here after implementation and verification.
+## Host surface
+
+The host subscribes to the native session/event bus, reacts to completed
+turn/end, invokes ctx.subprocess.spawn with bounded streams and emits a
+plugin-owned report. When available, the native session receives one concise
+assistant/message. Diagnostic tools expose the latest structured result and a
+manual run path.
+
+Self-healing, commit blocking, test generation, dashboard UI and external
+telemetry remain roadmap items.
