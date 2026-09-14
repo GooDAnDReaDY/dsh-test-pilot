@@ -59,3 +59,20 @@ test('report is concise and bounded to five failures', () => {
   assert.equal((text.match(/•/g) || []).length, 5);
   assert.ok(text.length < 1200);
 });
+test('parses Go, Rust, TAP and TypeScript compiler summaries', () => {
+  const go = parseTestOutput({ runner: 'go', output: '--- PASS: TestHealth (0.01s)\nok example.test 0.01s', exitCode: 0 });
+  assert.equal(go.status, 'passed');
+  assert.equal(go.counts.passed, 1);
+
+  const rust = parseTestOutput({ runner: 'rust', output: 'test result: ok. 3 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out', exitCode: 0 });
+  assert.equal(rust.status, 'passed');
+  assert.equal(rust.counts.total, 4);
+  assert.equal(rust.counts.skipped, 1);
+
+  const tap = parseTestOutput({ runner: 'tap', output: 'TAP version 13\n1..2\nok 1 - health\nok 2 - auth', exitCode: 0 });
+  assert.equal(tap.status, 'passed');
+  assert.equal(tap.counts.total, 2);
+
+  const tsc = parseTestOutput({ runner: 'tsc', output: 'Found 0 errors.', exitCode: 0 });
+  assert.equal(tsc.status, 'passed');
+});
