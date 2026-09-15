@@ -40,3 +40,5 @@ has been changed in this implementation step.
 
 - The first baseline push had no upstream. A normal explicit origin/branch
   push completed successfully; no force operation was used.
+- 2026-09-15: Added explicit queued/running lifecycle snapshots and run IDs for
+  background automatic runs; self-healing remains out of scope.

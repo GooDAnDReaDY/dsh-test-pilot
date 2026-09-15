@@ -73,11 +73,13 @@ graph LR
 - 解析器：统一统计、耗时、失败名称/位置、退出状态、超时状态、有界输出和
   类 secret 文本脱敏。
 - 幂等性：每个 session/turn key 只允许一次执行，重复事件会被忽略。
+- 后台生命周期：自动运行进入 queued/running/finished 状态，不会阻塞 turn
+  事件处理器。
 - 会话界面：原生 session 提供 append 时追加一条简短 assistant/message。
   同时发送 test-pilot/report 和 dsh-test-pilot/report，供其他界面渲染。
-- 诊断工具：test_pilot_last_run 返回最新结果；test_pilot_run 在当前工作区
-  手动执行有界命令。
-- 保留策略：内存中只保留最新标准化结果和有界事件 key 集合。
+- 诊断工具：test_pilot_last_run 返回最新的 queued、running 或完成结果；
+  test_pilot_run 在当前工作区手动执行有界命令。
+- 保留策略：内存中只保留有界 run records 和事件 key 集合。
 
 ### 源代码模块
 
@@ -89,7 +91,7 @@ graph LR
 | lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc 解析 |
 | lib/result.js | 标准化、脱敏和简洁渲染 |
 | lib/workspace.js | 工作区和 Git 变更检测 |
-| lib/state.js | 幂等性和最新结果状态 |
+| lib/state.js | 幂等性、运行生命周期和有界结果状态 |
 
 ## 安装
 
@@ -147,6 +149,8 @@ MVP 没有 HTTP routes。
 
 ## 结果状态
 
+- queued — 自动运行已接受，等待异步 worker。
+- running — 测试进程正在运行。
 - passed — 进程成功退出并解析到可识别的摘要。
 - failed — 非零退出、失败报告或错误报告。
 - timeout — 到达期限并终止进程。
@@ -161,8 +165,9 @@ MVP 没有 HTTP routes。
 - 输出和失败字段会脱敏并限制长度。
 - 测试输出不会被当作 prompt 或命令执行。
 - MVP 不执行网络请求，也不修改 Git。
-- 自动修复、审批 gate、回归基线、持久历史、测试生成器和 dashboard UI
-  属于后续路线图。
+- MVP 明确不包含自动修复：测试失败只报告给主 agent，由主 agent 决定是否以及
+  如何修复。
+- 审批 gate、回归基线、持久历史、测试生成器和 dashboard UI 属于后续路线图。
 
 ## 开发
 

@@ -19,3 +19,13 @@ test('seen-key retention is bounded', () => {
   state.claim('c'); state.finish('c', { status: 'passed' });
   assert.equal(state.claim('a'), true);
 });
+test('tracks queued, running and terminal snapshots for a run id', () => {
+  const state = createPilotState();
+  state.claim('run-1');
+  assert.equal(state.queue('run-1', { runner: 'pytest' }).status, 'queued');
+  assert.equal(state.start('run-1', { runner: 'pytest' }).status, 'running');
+  assert.equal(state.latest().runId, 'run-1');
+  assert.equal(state.activeCount(), 1);
+  const finished = state.finish('run-1', { status: 'passed', runner: 'pytest' });
+  assert.equal(finished.status, 'passed');
+});

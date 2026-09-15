@@ -76,13 +76,14 @@ graph LR
 - Parser: counts, duration, failure names/locations, exit status, timeout,
   bounded output и redaction значений, похожих на секреты.
 - Idempotency: один session/turn key допускает только один запуск.
+- Фоновый lifecycle: автоматический запуск проходит состояния queued/running/
+  finished и не блокирует обработчик хода агента.
 - Отчёт в чате: при наличии штатного session.append добавляется одно короткое
   assistant/message. Также публикуются события test-pilot/report и
   dsh-test-pilot/report.
-- Диагностика: test_pilot_last_run показывает последний результат;
-  test_pilot_run запускает команду вручную.
-- Retention: в памяти сохраняются последний нормализованный результат и
-  ограниченный набор event keys.
+- Диагностика: test_pilot_last_run показывает последний queued, running или
+  завершённый результат; test_pilot_run запускает команду вручную.
+- Retention: в памяти сохраняются ограниченные run records и event keys.
 
 ### Модули исходного кода
 
@@ -94,7 +95,7 @@ graph LR
 | lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc parser |
 | lib/result.js | Нормализация, redaction и краткий отчёт |
 | lib/workspace.js | Workspace и Git change detection |
-| lib/state.js | Idempotency и последний результат |
+| lib/state.js | Idempotency, lifecycle запуска и ограниченное состояние результатов |
 
 ## Установка
 
@@ -152,6 +153,8 @@ HTTP routes в MVP отсутствуют.
 
 ## Статусы
 
+- queued — запуск принят и ждёт фонового worker-а.
+- running — тестовый процесс выполняется.
 - passed — процесс завершился успешно и распознан summary.
 - failed — ненулевой exit, зафиксированный failure или error.
 - timeout — истёк deadline и процесс был завершён.
@@ -166,8 +169,10 @@ HTTP routes в MVP отсутствуют.
 - Output и failure fields redacted и ограничены по длине.
 - Test output не исполняется как prompt или команда.
 - MVP не обращается в сеть и не меняет Git.
-- Self-healing, approval gate, regression baseline, persistent history,
-  test generation и dashboard UI находятся в roadmap.
+- Self-healing намеренно не входит в MVP: при падении плагин только сообщает
+  результат основному агенту, а решение об исправлении остаётся за ним.
+- Approval gate, regression baseline, persistent history, test generation и
+  dashboard UI находятся в roadmap.
 
 ## Разработка
 

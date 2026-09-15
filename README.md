@@ -76,15 +76,16 @@ graph LR
   compiler commands are available. Pytest is the default.
 - Parsers: normalized counts, duration, failure names/locations, exit status,
   timeout state, bounded output and secret-shaped redaction.
-- Idempotency: one execution is admitted for a session/turn key; duplicate
-  delivery is ignored.
+- Background lifecycle: automatic runs are admitted once per session/turn key,
+  move through queued/running/finished states, and do not block the turn event
+  handler.
 - Chat surface: one concise assistant/message is appended when the native
   session exposes append. The plugin also emits test-pilot/report and
   dsh-test-pilot/report for consumers that render their own surface.
-- Diagnostics: test_pilot_last_run returns the latest result; test_pilot_run
-  starts a bounded manual run for the current workspace.
-- Retention: only the latest normalized result and a bounded set of event keys
-  are retained in memory.
+- Diagnostics: test_pilot_last_run returns the latest queued, running or
+  finished result; test_pilot_run starts a bounded manual run for the current
+  workspace.
+- Retention: only bounded run records and event keys are retained in memory.
 
 ### Source modules
 
@@ -96,7 +97,7 @@ graph LR
 | lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc parsing |
 | lib/result.js | Normalization, redaction and concise rendering |
 | lib/workspace.js | Workspace and Git change detection |
-| lib/state.js | Idempotency and latest-result state |
+| lib/state.js | Idempotency, run lifecycle and bounded result state |
 
 ## Installation
 
@@ -160,6 +161,8 @@ There are no HTTP routes in MVP.
 
 ## Result statuses
 
+- queued — an automatic run has been admitted and is waiting for its async worker.
+- running — the test process is currently running.
 - passed — process exited successfully and a recognized summary was parsed.
 - failed — non-zero exit, reported failure, or reported error.
 - timeout — the deadline was reached and the process was terminated.
@@ -175,8 +178,10 @@ There are no HTTP routes in MVP.
 - Output and failure fields are redacted and length-limited.
 - Test output is never executed as a prompt or command.
 - MVP performs no network calls and no Git mutation.
-- Self-healing, approval gates, regression baselines, persistent history,
-  generated tests and dashboard UI are roadmap work.
+- Self-healing is intentionally excluded from the MVP: a failure is reported
+  to the main agent, which decides whether and how to fix it.
+- Approval gates, regression baselines, persistent history, generated tests and
+  dashboard UI are roadmap work.
 
 ## Development
 

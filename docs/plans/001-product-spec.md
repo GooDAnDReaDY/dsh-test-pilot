@@ -2,8 +2,8 @@
 
 Создать @goodandready/dsh-test-pilot — проверяющий плагин DSH, который
 автоматически запускает тесты после завершения изменения кода, даёт
-структурированный red/green feedback и безопасно поддерживает ограниченный
-self-healing цикл.
+структурированный red/green feedback в фоне и возвращает результат основному
+агенту. Self-healing в MVP не выполняется.
 
 ## Продуктовый результат
 
@@ -33,6 +33,8 @@ tree/settled подключать только после проверки их 
 - Один конфигурируемый runner: pytest или Jest; выбор фиксируется первым
   техническим spike и отражается в ADR.
 - Hook на окончание turn с защитой от повторного запуска для одного turn.
+- Фоновый lifecycle каждого запуска: queued -> running -> terminal status;
+  запуск не блокирует обработчик turn/end.
 - Детектор изменившегося diff и безопасное определение рабочей директории.
 - Запуск runner через штатный DSH subprocess, timeout, лимит вывода и
   нормализованный результат.
@@ -64,7 +66,8 @@ agent loop и принудительное редактирование тест
 
 ## Roadmap 0.1.0–0.1.10
 
-- 0.1.0 — один runner, turn/end, parser, чат-отчёт, persisted last run.
+- 0.1.0 — один runner, turn/end, фоновый lifecycle, parser, чат-отчёт,
+  bounded in-memory run state.
 - 0.1.1 — второй runner и единый контракт adapters/result.
 - 0.1.2 — diff-aware test selection и baseline новых падений.
 - 0.1.3 — генератор предложений тестов по diff с объяснением покрытия.
@@ -79,8 +82,8 @@ agent loop и принудительное редактирование тест
 
 ## Критерии приёмки и проверки
 
-Есть тесты на повторный turn/end, timeout, malformed output, non-zero exit,
-новое/старое падение, лимит repair attempts и отмену. Real-composition test
+Есть тесты на повторный turn/end, queued/running lifecycle, timeout, malformed
+output, non-zero exit и отмену. Real-composition test
 проверяет загрузку settings card, регистрацию event listener/tool и
 пользовательское сообщение. Smoke run даёт воспроизводимый structured result.
 Документация описывает конфиг, threat model, ограничения и rollback policy.
