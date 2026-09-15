@@ -145,6 +145,8 @@ intentionally refused.
   result.
 - test_pilot_run — manually run the configured command; accepts an optional
   cwd override.
+- test_pilot_status — return the number of active background runs and the
+  latest queued, running or finished result.
 
 ### Events
 

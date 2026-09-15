@@ -132,6 +132,7 @@ maxOutputBytes: 200000
 
 ### 工具
 
+- test_pilot_status — 返回活动后台运行数和最新的 queued、running 或完成结果。
 - test_pilot_last_run — 返回最新的有界文本和结构化结果。
 - test_pilot_run — 手动执行配置命令，可选 cwd 覆盖。
 

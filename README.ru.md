@@ -137,6 +137,8 @@ substitution и shell chaining намеренно отклоняются.
 
 - test_pilot_last_run — возвращает последний bounded human-readable и structured
   result.
+- test_pilot_status — показывает число активных фоновых запусков и последний
+  queued, running или завершённый результат.
 - test_pilot_run — ручной запуск с необязательным override cwd.
 
 ### Events
