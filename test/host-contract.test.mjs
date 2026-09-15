@@ -7,6 +7,7 @@ test('host uses the confirmed native event and bounded subprocess service', () =
   assert.match(source, /event\?\.type !== 'turn\/end'/);
   assert.match(source, /ctx\.subprocess/);
   assert.match(source, /workspaceHasChanges/);
+  assert.match(source, /workspaceChains/);
   assert.match(source, /test-pilot\/report/);
   assert.match(source, /test_pilot_status/);
   assert.match(source, /session\.append\('assistant\/message'/);

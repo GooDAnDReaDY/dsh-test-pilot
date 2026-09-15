@@ -79,6 +79,8 @@ graph LR
 - Background lifecycle: automatic runs are admitted once per session/turn key,
   move through queued/running/finished states, and do not block the turn event
   handler.
+- Automatic runs are serialized per workspace, so concurrent turn events
+  cannot test the same mutable directory at the same time.
 - Chat surface: one concise assistant/message is appended when the native
   session exposes append. The plugin also emits test-pilot/report and
   dsh-test-pilot/report for consumers that render their own surface.
