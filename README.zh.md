@@ -75,7 +75,9 @@ graph LR
 - 幂等性：每个 session/turn key 只允许一次执行，重复事件会被忽略。
 - 后台生命周期：自动运行进入 queued/running/finished 状态，不会阻塞 turn
   事件处理器。
-- 每个工作区的自动运行会串行化，不会同时检查同一个可变目录。
+- 每个工作区的自动和手动运行都会串行化，不会同时检查同一个可变目录。
+- 生命周期事件会发布带有 runId 和时间戳的 queued/running/terminal 快照；
+  只有 terminal 快照会追加到会话。
 - 会话界面：原生 session 提供 append 时追加一条简短 assistant/message。
   同时发送 test-pilot/report 和 dsh-test-pilot/report，供其他界面渲染。
 - 诊断工具：test_pilot_last_run 返回最新的 queued、running 或完成结果；

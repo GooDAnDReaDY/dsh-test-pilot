@@ -78,8 +78,10 @@ graph LR
 - Idempotency: один session/turn key допускает только один запуск.
 - Фоновый lifecycle: автоматический запуск проходит состояния queued/running/
   finished и не блокирует обработчик хода агента.
-- Автоматические запуски сериализуются для каждой workspace-директории и не
+- Автоматические и ручные запуски сериализуются для каждой workspace-директории и не
   проверяют одну изменяемую директорию одновременно.
+- Lifecycle events публикуют snapshots queued/running/terminal с runId и
+  timestamps; в чат добавляется только terminal snapshot.
 - Отчёт в чате: при наличии штатного session.append добавляется одно короткое
   assistant/message. Также публикуются события test-pilot/report и
   dsh-test-pilot/report.

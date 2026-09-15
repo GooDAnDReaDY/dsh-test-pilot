@@ -35,13 +35,16 @@ the acceptance gate must boot the real entry path.
 ## Report boundary
 
 Automatic runs emit the plugin-owned test-pilot/report event with bounded
-result and formatted text. When the native session exposes append, the plugin
-also appends one concise assistant/message report with surfaceOp: append after
-turn/end; this is a session-log surface update, not a new agent turn, and the
-listener ignores assistant-message events. If the session does not expose that
-API or rejects the append, the bounded event and diagnostic
-test_pilot_last_run tool remain available and the test run is not failed solely
-because chat rendering is unavailable.
+result and formatted text.
+Lifecycle events publish queued, running and terminal snapshots with runId and
+timestamps; manual and automatic runs share the per-workspace queue. Only the
+terminal snapshot is appended to chat.
+When the native session exposes append, the plugin also appends one concise
+assistant/message report with surfaceOp: append after turn/end; this is a
+session-log surface update, not a new agent turn, and the listener ignores
+assistant-message events. If the session does not expose that API or rejects
+the append, the bounded event and diagnostic test_pilot_last_run tool remain
+available and the test run is not failed solely because chat rendering is unavailable.
 
 ## Rejected alternatives
 

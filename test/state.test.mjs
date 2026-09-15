@@ -36,3 +36,14 @@ test('returns newest bounded history first', () => {
   assert.deepEqual(state.list(2).map((run) => run.runId), ['b', 'a']);
   assert.equal(state.list(1)[0].status, 'failed');
 });
+test('preserves lifecycle timestamps across snapshots', () => {
+  const state = createPilotState();
+  state.claim('run-2');
+  const queued = state.queue('run-2');
+  const running = state.start('run-2');
+  const finished = state.finish('run-2', { status: 'passed' });
+  assert.equal(typeof queued.queuedAt, 'number');
+  assert.equal(running.queuedAt, queued.queuedAt);
+  assert.equal(typeof running.startedAt, 'number');
+  assert.ok(finished.finishedAt >= running.startedAt);
+});
