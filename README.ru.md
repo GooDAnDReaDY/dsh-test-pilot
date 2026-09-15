@@ -84,7 +84,8 @@ graph LR
   assistant/message. Также публикуются события test-pilot/report и
   dsh-test-pilot/report.
 - Диагностика: test_pilot_last_run показывает последний queued, running или
-  завершённый результат; test_pilot_run запускает команду вручную.
+  завершённый результат; test_pilot_history возвращает краткую историю без
+  полного output; test_pilot_run запускает команду вручную.
 - Retention: в памяти сохраняются ограниченные run records и event keys.
 
 ### Модули исходного кода

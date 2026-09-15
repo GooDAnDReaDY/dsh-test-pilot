@@ -79,6 +79,7 @@ graph LR
 - 会话界面：原生 session 提供 append 时追加一条简短 assistant/message。
   同时发送 test-pilot/report 和 dsh-test-pilot/report，供其他界面渲染。
 - 诊断工具：test_pilot_last_run 返回最新的 queued、running 或完成结果；
+  test_pilot_history 返回最近的有界摘要且不包含完整 output；
   test_pilot_run 在当前工作区手动执行有界命令。
 - 保留策略：内存中只保留有界 run records 和事件 key 集合。
 

@@ -29,3 +29,10 @@ test('tracks queued, running and terminal snapshots for a run id', () => {
   const finished = state.finish('run-1', { status: 'passed', runner: 'pytest' });
   assert.equal(finished.status, 'passed');
 });
+test('returns newest bounded history first', () => {
+  const state = createPilotState();
+  state.claim('a'); state.finish('a', { status: 'passed' });
+  state.claim('b'); state.finish('b', { status: 'failed' });
+  assert.deepEqual(state.list(2).map((run) => run.runId), ['b', 'a']);
+  assert.equal(state.list(1)[0].status, 'failed');
+});

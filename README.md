@@ -85,7 +85,8 @@ graph LR
   session exposes append. The plugin also emits test-pilot/report and
   dsh-test-pilot/report for consumers that render their own surface.
 - Diagnostics: test_pilot_last_run returns the latest queued, running or
-  finished result; test_pilot_run starts a bounded manual run for the current
+  finished result; test_pilot_history returns recent bounded summaries without
+  full output; test_pilot_run starts a bounded manual run for the current
   workspace.
 - Retention: only bounded run records and event keys are retained in memory.
 
