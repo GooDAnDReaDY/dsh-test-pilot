@@ -79,9 +79,8 @@ graph LR
 - 向 agent 报告：最新完成结果通过 additionalContexts 在本回合只返回一次；
   若结果在回合结束后才完成，原生 session 支持时追加一条简短消息。仍会发送
   test-pilot/report 和 dsh-test-pilot/report 事件。
-- 诊断工具：test_pilot_last_run 返回最新的 queued、running 或完成结果；
-  test_pilot_history 返回最近的有界摘要且不包含完整 output；
-  test_pilot_run 在当前工作区手动执行有界命令。
+- 工具：test_pilot_status 返回活动运行数和最新结果；可选 limit 最多附带
+  20 条近期有界摘要。test_pilot_run 在当前工作区或指定 cwd 手动运行完整配置命令。
 - 保留策略：简要终态会原子写入 `$DSH_HOME/data/dsh-test-pilot/state.json`。工作区以 SHA-256 键表示，不保存绝对路径；磁盘中仅保存状态、runner、统计数字、时间/耗时和失败测试标识，不保存命令或完整输出。最多保留 50 个工作区和 50 条历史记录，期限为 30 天。损坏文件或未知 schema 版本按空状态处理；详细输出仅留在内存中。
 
 ### 源代码模块
@@ -167,9 +166,8 @@ write/edit 调用；旧版 core 中的纯 shell 编辑无法检测，因此不�
 
 ### 工具
 
-- test_pilot_status — 返回活动后台运行数和最新的 queued、running 或完成结果。
-- test_pilot_last_run — 返回最新的有界文本和结构化结果。
-- test_pilot_run — 手动执行配置命令，可选 cwd 覆盖。
+- test_pilot_status — 返回活动运行和最新结果；可选 limit 最多附带 20 条近期有界摘要。
+- test_pilot_run — 在当前工作区或可选 cwd 手动执行完整配置命令。
 
 ### 事件
 

@@ -90,10 +90,10 @@ graph LR
   red-to-green recovery once per workspace. Repeated red results with the same
   failed-test identities are silent. The plugin continues to emit
   test-pilot/report and dsh-test-pilot/report for every existing report event.
-- Diagnostics: test_pilot_last_run returns the latest queued, running or
-  finished result; test_pilot_history returns recent bounded summaries without
-  full output; test_pilot_run starts a bounded manual run for the current
-  workspace.
+- Tools: test_pilot_status returns the active-run count and latest result;
+  optional limit includes up to 20 recent bounded summaries.
+  test_pilot_run starts the configured full command in the current workspace or
+  an optional cwd override.
 - Retention: terminal summaries are atomically stored under `$DSH_HOME/data/dsh-test-pilot/state.json`. Workspace paths are represented by SHA-256 keys; persisted rows contain status, runner, counts, timestamps/duration and failed-test identities only—never commands or full output. At most 50 workspaces and 50 history entries are retained for 30 days. Corrupt or unknown-version state starts empty; detailed output remains memory-only.
 
 ### Source modules
@@ -190,12 +190,10 @@ intentionally refused.
 
 ### Tools
 
-- test_pilot_last_run — return the latest bounded human-readable and structured
-  result.
-- test_pilot_run — manually run the configured command; accepts an optional
-  cwd override.
-- test_pilot_status — return the number of active background runs and the
-  latest queued, running or finished result.
+- test_pilot_status — return active runs and the latest result; optional limit
+  includes up to 20 recent bounded summaries.
+- test_pilot_run — manually run the configured full command in the current
+  workspace or an optional cwd override.
 
 ### Events
 

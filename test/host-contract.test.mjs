@@ -19,9 +19,12 @@ test('host uses the confirmed native event and bounded subprocess service', () =
   assert.doesNotMatch(source, /workspaceHasChanges|git status/);
   assert.match(source, /return enqueueWorkspaceRun\(cwd/);
   assert.match(source, /workspaceChains/);
-  assert.match(source, /test_pilot_history/);
+  assert.equal((source.match(/name: 'test_pilot_/g) || []).length, 2);
+  assert.match(source, /name: 'test_pilot_status'/);
+  assert.match(source, /name: 'test_pilot_run'/);
+  assert.match(source, /parameters: \{ limit: \{ type: 'number'/);
+  assert.doesNotMatch(source, /test_pilot_(last_run|history)/);
   assert.match(source, /test-pilot\/report/);
-  assert.match(source, /test_pilot_status/);
   assert.match(source, /session\.append\('assistant\/message'/);
 });
 test('MVP does not contain self-healing or automatic git mutation', () => {
