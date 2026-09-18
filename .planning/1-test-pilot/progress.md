@@ -27,11 +27,20 @@
 - Authored #6 tests for event summaries, fallback, mapping, report scope and argv
   safety; test execution remains deferred by owner request.
 
+## Current work
+
+- #4 is implemented in the worktree: tools/post-execute observes successful
+  write/edit/str_replace_editor mutations, coalesces for two seconds, cancels
+  stale runs via exec.signal, returns a completed undelivered result through
+  additionalContexts, and flushes pending work at turn/end. The completion
+  nudge and EN/RU/ZH documentation are updated. Integration tests are authored,
+  not run.
+
 ## Next
 
-- Report #6 to Gitea after static checks, then implement #4, #9, #5, #8 and #10;
-  update docs/issues/Memory Brain. Keep tests, profile changes, merge, deploy
-  and publication deferred.
+- Review/static-check #4, update its Gitea issue and PR #3, commit and record
+  Memory Brain; then continue #9, #5, #8 and #10. Tests, profile changes,
+  merge, deploy and publication remain deferred.
 
 ## Current blocker
 

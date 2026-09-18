@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<h3>Bounded automatic test feedback after every completed DSH turn</h3>
+<h3>Bounded automatic test feedback after file changes, inside the same DSH turn</h3>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@goodandready/dsh-test-pilot"><img src="https://img.shields.io/npm/v/@goodandready/dsh-test-pilot.svg?style=for-the-badge&color=6366f1&labelColor=1e1b4b" alt="npm version"></a>
@@ -37,12 +37,13 @@
 
 ## Overview
 
-AI-assisted code changes need an executable signal after the turn ends.
-Without one, a plausible response can hide a broken test suite until much later.
-Test Pilot reads DSH's per-turn file-change snapshot, selects related tests
-when every changed file can be mapped safely, and runs them through the DSH
-subprocess service. A read-only turn starts no test process. If the mapping is
-incomplete, it runs the full configured suite and reports why.
+AI-assisted code changes need an executable signal before the agent claims
+completion. Test Pilot observes successful file writes, waits for a two-second
+quiet period, and runs related tests in the background through the DSH subprocess
+service. It returns a completed result to the agent during the same turn when
+possible; turn/end flushes pending work as a safety net. A read-only turn starts
+no test process. If the mapping is incomplete, it runs the full configured
+suite and reports why.
 
 The MVP is deliberately a verifier, not an autonomous repair agent. It never
 edits files, starts repair turns, commits, pushes, blocks approvals, or sends
@@ -52,25 +53,17 @@ telemetry.
 
 ~~~mermaid
 graph LR
-  A[Completed DSH turn] --> B[Per-turn change events]
-  B --> C{Reliable changed files?}
-  C -- no --> D[Record no-tests; no subprocess]
-  C -- yes --> E[Related-test planner]
-  E --> F{Complete safe mapping?}
-  F -- yes --> G[Run related tests]
-  F -- no --> H[Run full suite; explain scope]
-  G --> I[Safe argv and ctx.subprocess]
-  H --> I
-  I --> J[Bounded output and runner parser]
-  J --> K[Normalized result and report]
-  K --> L[Chat, events and diagnostics]
+  A[Successful file-write tool result] --> B[Two-second quiet period]
+  B --> C[Background related/full test run]
+  C --> D[Attach completed result as additionalContexts]
+  D --> E[Next tool call; turn/end flushes pending work]
 ~~~
 
 ## Feature breakdown
 
-- Host lifecycle: subscribes to session/event. With the core change-summary
-  service, it waits for the final workspace/changes event; on older DSH it uses
-  successful write/edit observations at turn/end.
+- Host lifecycle: observes successful write, edit and mutating str_replace_editor
+  results in tools/post-execute. A two-second quiet period coalesces edits;
+  turn/end flushes pending work as a safety net.
 - Change tracking: uses the current-turn `ctx.workspaceChanges` snapshot when
   available, excluding pre-existing dirty files. On older DSH cores it falls
   back to successful built-in write/edit tool calls only; it never infers a
@@ -84,16 +77,17 @@ graph LR
   `test_pilot_run` always runs the full configured command.
 - Parsers: normalized counts, duration, failure names/locations, exit status,
   timeout state, bounded output and secret-shaped redaction.
-- Background lifecycle: automatic runs are admitted once per session/turn key,
-  move through queued/running/finished states, and do not block the turn event
-  handler.
+- Background lifecycle: later writes reset the debounce and cancel a stale
+  run. The post-execute listener never waits for tests, observes exec.signal,
+  and returns only an already-completed result in additionalContexts.
 - Automatic and manual runs are serialized per workspace, so concurrent requests
   cannot test the same mutable directory at the same time.
 - Lifecycle events publish queued/running/terminal snapshots with runId and
   timestamps; only the terminal snapshot is appended to the chat.
-- Chat surface: one concise assistant/message is appended when the native
-  session exposes append. The plugin also emits test-pilot/report and
-  dsh-test-pilot/report for consumers that render their own surface.
+- Chat surface: the latest completed result is delivered to the agent once in
+  additionalContexts; if it finishes after the turn ends, one concise
+  assistant/message is appended when the native session supports it. The plugin
+  also emits test-pilot/report and dsh-test-pilot/report.
 - Diagnostics: test_pilot_last_run returns the latest queued, running or
   finished result; test_pilot_history returns recent bounded summaries without
   full output; test_pilot_run starts a bounded manual run for the current

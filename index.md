@@ -2,8 +2,9 @@
 
 ## Purpose
 
-Automatically run configured tests after a completed DSH turn and return bounded,
-structured red/green feedback without starting an uncontrolled repair loop.
+Automatically run configured tests after successful file changes and return
+bounded, structured red/green feedback within the same DSH turn when possible,
+without starting an uncontrolled repair loop.
 
 ## Status
 
@@ -25,11 +26,12 @@ deferred to the later test cycle.
 
 ## Host surface
 
-The host subscribes to the native session/event bus and reacts to completed
-turns. Where available, it scopes automatic test runs to the native per-turn
-workspace-change summary; older DSH uses only successful built-in write/edit
-observations. It invokes ctx.subprocess.spawn with bounded streams and emits a
-plugin-owned report. Diagnostic tools expose the latest structured result and a
+The host observes successful file mutations in tools/post-execute, coalesces
+writes behind a two-second quiet period, and runs tests in the background. A
+later write cancels a stale run; exec.signal cancels pending and active work.
+The handler never waits for the test process and attaches only a completed,
+undelivered result through additionalContexts. turn/end flushes pending work
+as a safety net. Diagnostic tools expose the latest structured result and a
 manual full-suite run path.
 
 Self-healing, commit blocking, test generation, dashboard UI and external

@@ -61,6 +61,11 @@
   compatibility.
 - dsh-tool-tdd is a reference for ESM, subprocess, runner parsing and structured
   failure data, not its interactive TDD/self-healing behavior.
+- tools/post-execute receives (exec, result, next) and returns PostToolDecision.
+  Async listeners must observe exec.signal; additionalContexts may be attached
+  only after next settles. The plugin starts test work without awaiting it.
+- Verified tool-fs mutation names are write/edit; str_replace_editor mutates for
+  create, str_replace, and insert. Read/view calls must not schedule runs.
 - Persist only bounded counts, timestamps and failed-test identities; raw output
   stays memory-only. UI is en/zh; Russian UI remains separate.
 - Tests were deferred by the owner; historical counts are not fresh evidence.
@@ -94,10 +99,22 @@
 
 ## Issue #6 implementation
 
-- The completed-turn listener consumes the event-keyed per-turn summary when
-  available; it can process either event order and never uses repository-wide Git status.
-- All changed paths must map to supported related tests for a targeted run.
+- Commit bc7083d pushed to the shared feature branch and PR #3; issue #6 and PR
+  comments contain the implementation report.
+- Uses the event-keyed per-turn summary when available and never uses
+  repository-wide Git status. All changed paths must map safely for targeted runs.
 - An unavailable/truncated/ambiguous summary or unmapped path runs the full
   suite with a reason; no observed changes skip the automatic subprocess.
 - Tests for tracker, mapping, report scope and argv were authored but not run by
-  owner request. Static syntax and whitespace checks remain non-test checks.
+  owner request.
+
+## Issue #4 implementation in progress
+
+- tools/post-execute is the trigger; two-second quiet-period debounce coalesces
+  successful writes and cancels stale runs. Runs observe exec.signal and are
+  never awaited by the hook.
+- Completed, undelivered reports attach through additionalContexts once; turn/end
+  flushes pending changes and appends a result only if not delivered in-turn.
+- DSH completion nudge and README EN/RU/ZH, ADR, design contract, spec and index
+  were updated. Debounce/cancellation/in-turn/failsafe integration tests are
+  authored but intentionally unrun.

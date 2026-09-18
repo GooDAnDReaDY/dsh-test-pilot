@@ -1,7 +1,7 @@
 {
   "name": "@goodandready/dsh-test-pilot",
   "version": "0.1.0",
-  "description": "Automatic bounded test runs after completed DeepSeek Harness turns.",
+  "description": "Automatic bounded test runs after DeepSeek Harness file changes.",
   "type": "module",
   "main": "lib/index.js",
   "exports": { ".": "./lib/index.js", "./package.json": "./package.json" },

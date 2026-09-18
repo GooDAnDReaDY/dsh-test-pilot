@@ -88,9 +88,10 @@ MVP-only sequence above:
    ctx.workspaceChanges.summary(sessionId, event.seq), capture per-turn changes,
    map source-to-test, explain conservative full-suite fallback and always run
    the full suite manually. Tests are authored but deliberately unrun.
-3. #4: tools/post-execute writes, 2-second debounce/coalescing, background run,
-   observe exec.signal, return only completed additionalContexts, turn/end
-   failsafe and a short system-prompt nudge.
+3. #4 IN PROGRESS: tools/post-execute observes successful file mutations;
+   two-second per-turn debounce, cancel stale runs through exec.signal, return
+   only completed additionalContexts, turn/end flush failsafe, and completion
+   nudge in system prompt. Integration tests are authored but deliberately unrun.
 4. #9: versioned atomic state, bounded history, persist counts/timestamps and
    failed-test identities only; never persist full command output.
 5. #5: keep plugin report events; chat only on meaningful red/green transitions,

@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<h3>在每次 DSH 回合完成后提供有界的自动测试反馈</h3>
+<h3>文件修改后、同一 DSH 回合内提供有界的自动测试反馈</h3>
 
 <p align="center">
   <a href="https://www.npmjs.com/package/@goodandready/dsh-test-pilot"><img src="https://img.shields.io/npm/v/@goodandready/dsh-test-pilot.svg?style=for-the-badge&color=6366f1&labelColor=1e1b4b" alt="npm version"></a>
@@ -37,11 +37,11 @@
 
 ## 概览
 
-AI 辅助的代码修改需要在回合结束后得到可执行的质量信号。否则，一段
-看似合理的回答可能让测试套件保持损坏状态，直到很久以后才被发现。
-Test Pilot 读取 DSH 当前回合的文件变更快照；当每个变更文件都能安全映射到
-相关测试时，只运行这些测试，并通过 DSH subprocess 服务执行。只读回合不会启动
-测试进程。映射不完整时会运行完整测试套件，并说明原因。
+AI 辅助的代码修改需要在 agent 宣告完成之前得到可执行的质量信号。
+Test Pilot 观察成功的文件写入，在两秒静默期后通过 DSH subprocess 服务
+在后台运行相关测试。条件允许时，它会在同一回合把已完成结果返回给 agent；
+turn/end 会刷新尚未启动的兜底运行。只读回合不会启动测试进程。映射不完整时
+会运行完整测试套件，并说明原因。
 
 MVP 是验证器，而不是自动修复代理。它不会编辑文件、启动修复回合、
 提交、推送、阻止审批或发送遥测。
@@ -50,24 +50,17 @@ MVP 是验证器，而不是自动修复代理。它不会编辑文件、启动�
 
 ~~~mermaid
 graph LR
-  A[已完成的 DSH 回合] --> B[当前回合变更事件]
-  B --> C{是否有可靠的文件变更}
-  C -- 否 --> D[记录 no-tests；不启动进程]
-  C -- 是 --> E[关联测试规划器]
-  E --> F{能否完整安全映射}
-  F -- 是 --> G[只运行关联测试]
-  F -- 否 --> H[运行完整套件并说明范围]
-  G --> I[安全 argv 和 ctx.subprocess]
-  H --> I
-  I --> J[有界输出和 runner 解析]
-  J --> K[标准化结果和报告]
-  K --> L[会话、事件和诊断工具]
+  A[文件成功写入] --> B[两秒静默窗口]
+  B --> C[后台运行关联测试或完整套件]
+  C --> D[通过 additionalContexts 附加已完成结果]
+  D --> E[下一个工具调用；turn/end 负责兜底启动]
 ~~~
 
 ## 功能分解
 
-- Host 生命周期：订阅 session/event。新版 core 等待最终 workspace/changes 事件；
-  旧版 DSH 在 turn/end 时使用已成功的 write/edit 观测。
+- Host 生命周期：tools/post-execute 观察成功的 write、edit 和修改型
+  str_replace_editor。两秒静默窗口合并连续修改；turn/end 会立即刷新尚未
+  启动的兜底运行。
 - 变更跟踪：优先使用当前回合的 ctx.workspaceChanges 快照，不会把之前已有的
   未提交文件误算进本回合。在较旧的 DSH core 上，仅回退到成功的内置 write/edit
   工具调用；不会通过 Git status 推断本回合改动。
@@ -78,14 +71,14 @@ graph LR
   并说明原因。手动 test_pilot_run 始终运行完整配置命令。
 - 解析器：统一统计、耗时、失败名称/位置、退出状态、超时状态、有界输出和
   类 secret 文本脱敏。
-- 幂等性：每个 session/turn key 只允许一次执行，重复事件会被忽略。
-- 后台生命周期：自动运行进入 queued/running/finished 状态，不会阻塞 turn
-  事件处理器。
+- 后台生命周期：后续写入会重置计时并取消过期运行。处理器不会等待测试，
+  会观察 exec.signal，并且只通过 additionalContexts 返回已完成结果。
 - 每个工作区的自动和手动运行都会串行化，不会同时检查同一个可变目录。
 - 生命周期事件会发布带有 runId 和时间戳的 queued/running/terminal 快照；
   只有 terminal 快照会追加到会话。
-- 会话界面：原生 session 提供 append 时追加一条简短 assistant/message。
-  同时发送 test-pilot/report 和 dsh-test-pilot/report，供其他界面渲染。
+- 向 agent 报告：最新完成结果通过 additionalContexts 在本回合只返回一次；
+  若结果在回合结束后才完成，原生 session 支持时追加一条简短消息。仍会发送
+  test-pilot/report 和 dsh-test-pilot/report 事件。
 - 诊断工具：test_pilot_last_run 返回最新的 queued、running 或完成结果；
   test_pilot_history 返回最近的有界摘要且不包含完整 output；
   test_pilot_run 在当前工作区手动执行有界命令。

@@ -5,13 +5,14 @@ Status: accepted for MVP 0.1.0
 ## Decision
 
 The first execution adapter is pytest, configured as the argv pytest -q.
-The host listens to the native session/event bus. When the optional
-ctx.workspaceChanges service is present, it reads the per-turn summary announced
-by workspace/changes and starts only after that final event (which can follow
-turn/end). On older DSH cores, it falls back to successful built-in write/edit
-tool observations at turn/end and skips when no reliable paths were observed.
-If a native change event is seen but its summary cannot be read or is incomplete,
-the plugin runs the full configured suite instead of treating the turn as unchanged.
+The host observes successful file mutations in the tools/post-execute
+waterfall and coalesces them behind a two-second quiet period. It never waits for
+the test process in that critical path. New writes cancel stale work; the
+listener observes exec.signal, and turn/end flushes pending changes as a
+safety net. When available, ctx.workspaceChanges.summary(sessionId, seq)
+provides the authoritative per-turn file list; absent, incomplete, or unsafe
+change data falls back to the full configured suite. Older cores use successful
+built-in write/edit observations.
 
 The process boundary is ctx.subprocess.spawn. The plugin supplies argv,
 workspace cwd, ignored stdin, bounded stdout/stderr collection, a spill cap,
@@ -44,12 +45,13 @@ result and formatted text.
 Lifecycle events publish queued, running and terminal snapshots with runId and
 timestamps; manual and automatic runs share the per-workspace queue. Only the
 terminal snapshot is appended to chat.
-When the native session exposes append, the plugin also appends one concise
-assistant/message report with surfaceOp: append after the completed turn; this is a
-session-log surface update, not a new agent turn, and the listener ignores
-assistant-message events. If the session does not expose that API or rejects
-the append, the bounded event and diagnostic test_pilot_last_run tool remain
-available and the test run is not failed solely because chat rendering is unavailable.
+The latest completed result is attached once to a later tool outcome through
+additionalContexts, so the agent can inspect it in the same turn. The
+post-execute listener never waits for a pending test run. If a run finishes only
+after turn end, the plugin appends one concise assistant/message with
+surfaceOp: append when supported. This is a session-log update, not a new
+agent turn. If chat append is unavailable, the bounded report event and
+test_pilot_last_run remain available.
 
 ## Rejected alternatives
 

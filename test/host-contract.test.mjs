@@ -4,6 +4,9 @@ import { test } from 'node:test';
 const source = fs.readFileSync(new URL('../lib/index.js', import.meta.url), 'utf8');
 test('host uses the confirmed native event and bounded subprocess service', () => {
   assert.match(source, /ctx\.on\('session\/event'/);
+  assert.ok(source.includes('tools/post-execute'));
+  assert.match(source, /additionalContexts/);
+  assert.ok(source.includes('exec?.signal?.aborted'));
   assert.match(source, /workspace\/changes/);
   assert.match(source, /ctx\.inject\(\['workspaceChanges'\]/);
   assert.match(source, /event\?\.type !== 'turn\/end'/);
