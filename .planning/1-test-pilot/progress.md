@@ -11,17 +11,19 @@
 - Implemented package skeleton, Cordis patch, result model, safe argv parser,
   bounded subprocess runner, pytest/Jest-compatible parser, redaction,
   workspace change detector, idempotency state and diagnostic tools.
-- Added 21 unit/contract tests. Current result: 21 passed, 0 failed,
-  0 cancelled; git diff --check is clean.
+- The original baseline had 21 passing unit/contract tests before this feature
+  block; that result is historical, not validation of the current changes.
+- Implemented #7: workspace rules, safe runner detection and silent automatic
+  no-run for unknown projects; updated the English, Chinese and Russian guides.
+- Added runner-detection and npm/Deno parser tests. Tests remain deliberately
+  unrun; static syntax checks and git diff --check pass.
 - Verified native Session.append report bridge in a real Cordis Context: automatic
   runs append one concise assistant/message after turn/end when supported, while
   plugin-owned report events and diagnostic tools remain fallbacks.
 
 ## Next
 
-- Run the exact package artifact through the isolated MiniPC DSH profile.
-- Verify settings-card behavior in the shipped profile and record smoke evidence.
-- Remove the temporary test installation and close the acceptance gate.
+- Implement #6 next, then #4, #9, #5, #8 and #10; update docs/issues/Memory Brain and perform non-test static checks only. Keep testing, profile changes, merge, deploy and publication deferred.
 
 ## Current blocker
 
@@ -42,3 +44,6 @@ has been changed in this implementation step.
   push completed successfully; no force operation was used.
 - 2026-09-15: Added explicit queued/running lifecycle snapshots and run IDs for
   background automatic runs; self-healing remains out of scope.
+
+- 2026-09-18: Owner approved #4-#10 in PR #3 and confirmed the expected DEV-root
+  .worktrees entry may be ignored without touching root. Tests remain deferred.

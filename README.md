@@ -98,8 +98,9 @@ graph LR
 | --- | --- |
 | lib/index.js | Cordis host wiring, settings, event handling, tools and reports |
 | lib/command.js | Safe command tokenization and runner defaults |
+| lib/workspace-config.js | Workspace rules and bounded runner auto-detection |
 | lib/runner.js | DSH subprocess invocation, timeout, cancellation and stream limits |
-| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc parsing |
+| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm parsing |
 | lib/result.js | Normalization, redaction and concise rendering |
 | lib/workspace.js | Workspace and Git change detection |
 | lib/state.js | Idempotency, run lifecycle and bounded result state |
@@ -112,7 +113,7 @@ dsh plugin --profile web add @goodandready/dsh-test-pilot
 
 The package is designed for a DSH web profile. Use a profile-specific settings
 card to enable or disable automatic runs and select the command. Test Pilot
-must be installed alongside the DSH subprocess, tools and settings services.
+must be installed alongside the DSH filesystem, subprocess, tools and settings services.
 
 ## Configuration
 
@@ -120,8 +121,13 @@ Example settings:
 
 ~~~yaml
 enabled: true
-runner: pytest
-command: pytest -q
+runner: auto
+command: ""
+workspaceRules:
+  - path: /absolute/path/to/repo
+    enabled: true
+    runner: auto
+    command: ""
 cwd: ""
 skipIfNoChanges: true
 timeoutMs: 120000
@@ -131,12 +137,21 @@ maxOutputBytes: 200000
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
 | enabled | boolean | true | Run after completed turns |
-| runner | string | pytest | pytest, jest, vitest, go, rust, cargo, tap or tsc |
-| command | string | pytest -q | Executable and arguments; shell syntax is rejected |
+| runner | string | auto | auto, pytest, jest, vitest, go, rust/cargo, tap, tsc, deno or npm |
+| command | string | empty | Optional executable and arguments; shell syntax is rejected |
+| workspaceRules | array | [] | Per-workspace path, enablement, runner and optional command |
 | cwd | string | empty | Explicit workspace directory; empty uses the session workspace |
 | skipIfNoChanges | boolean | true | Skip when Git reports no workspace changes |
 | timeoutMs | number | 120000 | Maximum execution time in milliseconds |
 | maxOutputBytes | number | 200000 | Per-stream collection limit |
+
+Workspace rules use the longest matching path prefix. With `runner: auto`,
+Test Pilot checks `pytest.ini`, pytest configuration in `pyproject.toml`, a
+`package.json` test script, `go.mod`, `Cargo.toml`, and `deno.json` (or `deno.jsonc`). If no
+supported runner is found, automatic execution stays silent. Existing flat
+`runner` and `command` settings remain a rule for the current workspace root.
+Set `runner` explicitly for an otherwise unknown framework; `command` overrides
+the detected or default command.
 
 The configured command is data, not a shell script. Use an executable and
 arguments. Pipelines, redirects, command substitution and shell chaining are

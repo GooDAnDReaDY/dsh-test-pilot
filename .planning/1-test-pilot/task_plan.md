@@ -73,3 +73,51 @@ profile/config/env, external services/credentials, production/deploy,
 architecture/API/UI scope beyond this document, or a third attempt at the same
 failure. Do not publish or bump version without the explicit publication
 approval.
+
+## Approved feature block: Gitea issues #4-#10 (2026-09-18)
+
+Owner approved implementing issues #4-#10 together in existing WIP PR #3 and
+branch docs/issue-1-baseline-dsh-test-pilot. This order supersedes the original
+MVP-only sequence above:
+
+1. #7 DONE: workspace runner rules with longest-prefix match; legacy flat
+   settings remain rooted at the current workspace; bounded safe detection
+   supports pytest, package.json scripts, Go, Cargo and Deno. Unknown projects
+   stay silent in automatic mode.
+2. #6: verify the installed and current public workspace-change feed API
+   (the issue says workspaceChanges; upstream docs expose
+   ctx.workspaceFiles.changes), capture per-turn writes, map source-to-test,
+   explain full-suite fallback and always run the full suite manually.
+3. #4: tools/post-execute writes, 2-second debounce/coalescing, background run,
+   observe exec.signal, return only completed additionalContexts, turn/end
+   failsafe and a short system-prompt nudge.
+4. #9: versioned atomic state, bounded history, persist counts/timestamps and
+   failed-test identities only; never persist full command output.
+5. #5: keep plugin report events; chat only on meaningful red/green transitions,
+   silent green/skips, compare failed-test identities.
+6. #8: native settings card and session-header status chip; en/zh UI only.
+7. #10 last: keep test_pilot_status and test_pilot_run; remove two redundant
+   tools after descriptions stabilize.
+8. Update spec, design, index, all README languages, Gitea and Memory Brain;
+   inspect diff and run non-test static checks only.
+9. Defer all test runs, package installation, profile changes/restarts, merge,
+   deploy and publication until separately requested/approved.
+
+No self-healing, generated tests, commit gate, automatic edits or external
+telemetry. Installed MiniAI source does not expose workspaceChanges or
+workspaceFiles; preserve a safe optional fallback and verify the target version
+
+before claiming compatibility. Ignore the approved DEV-root worktree registration
+without changing/synchronizing the root.
+## Errors encountered
+
+| Error | Resolution |
+|---|---|
+| Initial SSH read had a bad nested cwd and continued after cd failed; read-only unrelated listing followed. | Verified exact worktree, then used PowerShell here-strings. No files changed. |
+| Nested PowerShell quoting broke sed/jq; first diff dry-run had wrong hunk counts. | Used simpler remote commands and recalculated patch line counts. No files changed. |
+| Patch construction had an unescaped delimiter and unavailable local base64 helpers. | Use ASCII payload and in-memory encoder. No remote files changed. |
+| A combined patch had an incorrect hunk count and applied only its first hunk; a later parser hunk attached the existing TypeScript parser body to a new function. | Inspected the diff, applied remaining changes separately, and used node --check to find and fix the parser boundary. No tests were run. |
+| PowerShell patch streams introduced mixed CRLF/LF and git diff --check flagged new lines. | Normalized touched text files to LF and reran git diff --check. |
+| Gitea Python wrapper successfully posted all eight kickoff comments, then raised NameError at the heredoc tail; a later read-only request used the wrong credential JSON shape. | Verified all eight responses were HTTP 201; did not repost. Subsequent code work does not depend on that failed read. |
+| A few read-only SSH wrappers failed on printf option parsing or nested quoting; an early grep also exceeded output limits. | Reissued targeted read-only commands with smaller output and safer quoting; no project/profile mutations resulted. |
+| Some later plan/README patch hunks used mismatched counts or context and created exact .rej files. | Inspected and removed only those generated rejects, then reapplied intended edits; no source data was lost. |

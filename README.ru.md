@@ -96,8 +96,9 @@ graph LR
 | --- | --- |
 | lib/index.js | Cordis host, settings, события, tools и отчёты |
 | lib/command.js | Безопасный tokenizer и runner defaults |
+| lib/workspace-config.js | Workspace rules и ограниченное автоопределение runner |
 | lib/runner.js | DSH subprocess, timeout, cancellation и лимиты потоков |
-| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc parser |
+| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm parser |
 | lib/result.js | Нормализация, redaction и краткий отчёт |
 | lib/workspace.js | Workspace и Git change detection |
 | lib/state.js | Idempotency, lifecycle запуска и ограниченное состояние результатов |
@@ -109,14 +110,19 @@ dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
 Плагин рассчитан на web profile DSH. В settings card выберите runner и команду.
-Для работы нужны сервисы DSH subprocess, tools и settings.
+Для работы нужны сервисы DSH filesystem, subprocess, tools и settings.
 
 ## Конфигурация
 
 ~~~yaml
 enabled: true
-runner: pytest
-command: pytest -q
+runner: auto
+command: ""
+workspaceRules:
+  - path: /absolute/path/to/repo
+    enabled: true
+    runner: auto
+    command: ""
 cwd: ""
 skipIfNoChanges: true
 timeoutMs: 120000
@@ -126,12 +132,21 @@ maxOutputBytes: 200000
 | Параметр | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | enabled | boolean | true | Запускать после завершённого turn |
-| runner | string | pytest | pytest, jest, vitest, go, rust, cargo, tap или tsc |
-| command | string | pytest -q | Исполняемый файл и аргументы; shell syntax запрещён |
+| runner | string | auto | auto, pytest, jest, vitest, go, rust/cargo, tap, tsc, deno или npm |
+| command | string | пусто | Необязательная команда: исполняемый файл и аргументы; shell syntax запрещён |
+| workspaceRules | array | [] | Правила рабочего пространства: путь, включение, runner и команда |
 | cwd | string | пусто | Явная workspace-директория; пусто использует workspace сессии |
 | skipIfNoChanges | boolean | true | Пропускать запуск без изменений Git |
 | timeoutMs | number | 120000 | Максимальное время выполнения в миллисекундах |
 | maxOutputBytes | number | 200000 | Лимит сбора каждого output stream |
+
+Правило выбирается по самому длинному совпадающему префиксу пути. При
+`runner: auto` плагин проверяет `pytest.ini`, pytest-настройки в `pyproject.toml`,
+тестовый скрипт `package.json`, `go.mod`, `Cargo.toml` и `deno.json` (или `deno.jsonc`). Если runner
+не найден, автоматический запуск и сообщение пропускаются. Старые верхнеуровневые
+`runner` и `command` остаются правилом для корня текущего workspace.
+Для неизвестного фреймворка задайте `runner` явно; `command` переопределяет
+найденную или стандартную команду.
 
 Команда является данными, а не shell-скриптом. Pipeline, redirect, command
 substitution и shell chaining намеренно отклоняются.

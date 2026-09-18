@@ -76,3 +76,13 @@ test('parses Go, Rust, TAP and TypeScript compiler summaries', () => {
   const tsc = parseTestOutput({ runner: 'tsc', output: 'Found 0 errors.', exitCode: 0 });
   assert.equal(tsc.status, 'passed');
 });
+test('uses the exit status for an otherwise unrecognized npm test summary', () => {
+  const result = parseTestOutput({ runner: 'npm', output: 'tests completed', exitCode: 0 });
+  assert.equal(result.status, 'passed');
+  assert.equal(result.counts.total, 0);
+});
+test('parses Deno summary counts', () => {
+  const result = parseTestOutput({ runner: 'deno', output: 'ok | 2 passed | 0 failed (8ms)', exitCode: 0 });
+  assert.equal(result.status, 'passed');
+  assert.equal(result.counts.passed, 2);
+});

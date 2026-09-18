@@ -91,8 +91,9 @@ graph LR
 | --- | --- |
 | lib/index.js | Cordis host wiring、settings、事件、工具和报告 |
 | lib/command.js | 安全命令分词和 runner 默认值 |
+| lib/workspace-config.js | 工作区规则和有界 runner 自动检测 |
 | lib/runner.js | DSH subprocess、超时、取消和流限制 |
-| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc 解析 |
+| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm 解析 |
 | lib/result.js | 标准化、脱敏和简洁渲染 |
 | lib/workspace.js | 工作区和 Git 变更检测 |
 | lib/state.js | 幂等性、运行生命周期和有界结果状态 |
@@ -104,15 +105,20 @@ dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
 此软件包面向 DSH web profile。请通过 profile 的 settings card 启用或停用
-自动运行并选择命令。Test Pilot 需要与 DSH subprocess、tools 和 settings
+自动运行并选择命令。Test Pilot 需要与 DSH filesystem、subprocess、tools 和 settings
 服务一起安装。
 
 ## 配置
 
 ~~~yaml
 enabled: true
-runner: pytest
-command: pytest -q
+runner: auto
+command: ""
+workspaceRules:
+  - path: /absolute/path/to/repo
+    enabled: true
+    runner: auto
+    command: ""
 cwd: ""
 skipIfNoChanges: true
 timeoutMs: 120000
@@ -122,12 +128,19 @@ maxOutputBytes: 200000
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | enabled | boolean | true | 在已完成回合后运行 |
-| runner | string | pytest | pytest、jest、vitest、go、rust、cargo、tap 或 tsc |
-| command | string | pytest -q | 可执行文件和参数；拒绝 shell 语法 |
+| runner | string | auto | auto、pytest、jest、vitest、go、rust/cargo、tap、tsc、deno 或 npm |
+| command | string | 空 | 可选的可执行文件和参数；拒绝 shell 语法 |
+| workspaceRules | array | [] | 按工作区配置路径、启用状态、runner 和可选命令 |
 | cwd | string | 空 | 明确的工作区；为空时使用 session 工作区 |
 | skipIfNoChanges | boolean | true | Git 没有变更时跳过 |
 | timeoutMs | number | 120000 | 最大执行时间，单位毫秒 |
 | maxOutputBytes | number | 200000 | 每个输出流的收集上限 |
+
+工作区规则按最长匹配路径前缀选择。`runner: auto` 会检查
+`pytest.ini`、含 pytest 配置的 `pyproject.toml`、`package.json` 测试脚本、
+`go.mod`、`Cargo.toml` 和 `deno.json`（或 `deno.jsonc`）。找不到支持的 runner 时，自动运行保持
+静默。旧版顶层 `runner` 和 `command` 设置仍作为当前工作区根目录的规则。
+对于无法识别的框架，请显式设置 `runner`；`command` 会覆盖自动检测出的默认命令。
 
 配置命令被当作数据而不是 shell 脚本。请使用可执行文件和参数；
 管道、重定向、命令替换和 shell 链式语法会被拒绝。

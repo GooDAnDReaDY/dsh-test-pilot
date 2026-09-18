@@ -44,3 +44,46 @@
 - Private Gitea archive access from MiniPC is not available without an approved
   credential or artifact route; no credential was copied and no profile state
   was changed.
+
+## Findings for issues #4-#10 (2026-09-18)
+
+- Issues #4-#10 are open and authorized together in WIP PR #3; #10 is last.
+- Official DSH tools/post-execute is an async waterfall; it can attach
+  additionalContexts, but listener failures affect tool results and async
+  listeners must observe exec.signal. Start tests off the critical path.
+- Current native surfaces are settings.plugin.item keyed by settings namespace
+  and conversation.session.header.actions. Reuse shared settings card/field
+  patterns; do not add navigation.
+- Current public docs expose changes through ctx.workspaceFiles.changes; the
+  installed MiniAI source scan found neither service name.
+- Verify both target versions and keep the capability optional before claiming
+  compatibility.
+- dsh-tool-tdd is a reference for ESM, subprocess, runner parsing and structured
+  failure data, not its interactive TDD/self-healing behavior.
+- Persist only bounded counts, timestamps and failed-test identities; raw output
+  stays memory-only. UI is en/zh; Russian UI remains separate.
+- Tests were deferred by the owner; historical counts are not fresh evidence.
+
+## Source references
+
+- https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/api/README.md
+- https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-09-05-workspace-files-service.md
+- https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/tools.md
+- https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/client
+- https://github.com/Xiaooooo434680/dsh-tool-tdd
+
+## Issue #7 implementation
+
+- Runner rules use longest workspace path-prefix; flat legacy runner/command
+  settings behave as a rule at the current workspace root.
+- Detection reads only workspace-root markers through ctx.fs, rejects symlinked
+  config files, requires known file sizes, and caps JSON/TOML reads at 128 KiB.
+- Recognized markers: pytest.ini, pytest pyproject configuration, package.json
+  test script, go.mod, Cargo.toml and deno.json/deno.jsonc.
+- Unknown workspaces do not queue a run or emit a message automatically;
+  manual invocation returns a bounded no-tests result.
+- Added tests for rule precedence, detection, legacy config, unknown workspaces,
+  npm/Deno output parsing. These tests were intentionally not run.
+- Current upstream API docs expose the instrumented workspace file changes feed
+  through ctx.workspaceFiles; issue #6's workspaceChanges label must be reconciled
+  against the installed and target DSH versions before implementing its adapter.
