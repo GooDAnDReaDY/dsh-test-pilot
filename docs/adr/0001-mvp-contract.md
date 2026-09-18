@@ -43,15 +43,19 @@ the acceptance gate must boot the real entry path.
 Automatic runs emit the plugin-owned test-pilot/report event with bounded
 result and formatted text.
 Lifecycle events publish queued, running and terminal snapshots with runId and
-timestamps; manual and automatic runs share the per-workspace queue. Only the
-terminal snapshot is appended to chat.
+timestamps; manual and automatic runs share the per-workspace queue. The agent
+receives a completed automatic result through additionalContexts once, including
+green outcomes. User-visible chat messages are separate and transition-based:
+the first red outcome, a green-to-red change, a changed red failure composition,
+or red-to-green recovery is appended once. Green outcomes, no-tests and repeated
+red outcomes with identical failed-test identities are not appended.
 The latest completed result is attached once to a later tool outcome through
 additionalContexts, so the agent can inspect it in the same turn. The
 post-execute listener never waits for a pending test run. If a run finishes only
-after turn end, the plugin appends one concise assistant/message with
-surfaceOp: append when supported. This is a session-log update, not a new
-agent turn. If chat append is unavailable, the bounded report event and
-test_pilot_last_run remain available.
+after turn end and represents a reportable transition, the plugin appends one
+concise assistant/message with surfaceOp: append when supported. This is a
+session-log update, not a new agent turn. If chat append is unavailable, the
+bounded report event and test_pilot_last_run remain available.
 
 ## Persistent state boundary
 

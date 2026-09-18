@@ -96,8 +96,9 @@ MVP-only sequence above:
    50-row/30-day bounded history, and failed-test identities/counts only; never
    persist commands, absolute paths or full command output. Tests are authored,
    deliberately unrun.
-5. #5 NEXT: keep plugin report events; chat only on meaningful red/green transitions,
-   silent green/skips, compare failed-test identities.
+5. #5 IMPLEMENTED: preserve report events and agent contexts; chat is silent on
+   green/skips and repeated identical red results, and reports initial/new red
+   compositions plus red-to-green recovery. Tests are authored, not run.
 6. #8: native settings card and session-header status chip; en/zh UI only.
 7. #10 last: keep test_pilot_status and test_pilot_run; remove two redundant
    tools after descriptions stabilize.

@@ -4,7 +4,7 @@ import { apply } from '../lib/index.js';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function createHost() {
+function createHost(exitCode = 0) {
   const listeners = new Map();
   const spawnCalls = [];
   const cleanups = [];
@@ -33,7 +33,7 @@ function createHost() {
             stdout: { readFrom: () => ({ text: '1 passed' }) },
             stderr: { readFrom: () => ({ text: '' }) },
           },
-          done: Promise.resolve({ exitCode: 0 }),
+          done: Promise.resolve({ exitCode }),
         };
       },
     },
@@ -97,6 +97,26 @@ test('debounces writes and returns a fresh completed result in additionalContext
   assert.match(next.additionalContexts[0].id, /^[0-9a-f-]{36}$/i);
   assert.equal(next.additionalContexts[0].role, 'user');
   assert.match(next.additionalContexts[0].content[0].text, /test-pilot/);
+  await listeners.get('session/event')(session, { type: 'turn/end', data: { turn: 1, outcome: 'success' } });
+  assert.equal(session.appended.length, 0, 'a green result is delivered to the agent but never appended to chat');
+});
+
+test('the first red result appends one user-visible transition report', async () => {
+  const host = createHost(1);
+  const { listeners, session, plugin } = host;
+  session.workspace.cwd = '/repo-red-transition-' + Date.now() + '-' + Math.random();
+  startTurn(listeners, session);
+  const signal = new AbortController().signal;
+  await listeners.get('tools/post-execute')(
+    writeExecution(session, signal),
+    successfulSubprocessResult(),
+    async () => ({ kind: 'accept' }),
+  );
+  await listeners.get('session/event')(session, { type: 'turn/end', data: { turn: 1, outcome: 'success' } });
+  for (let i = 0; i < 100 && session.appended.length === 0; i += 1) await sleep(10);
+  assert.equal(plugin.state.latest()?.status, 'failed');
+  assert.equal(session.appended.length, 1);
+  assert.match(session.appended[0].data.message.content[0].text, /status=failed/);
 });
 
 test('aborting exec.signal cancels a pending debounce before subprocess spawn', async () => {

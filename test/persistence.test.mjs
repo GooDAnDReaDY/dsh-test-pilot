@@ -63,7 +63,7 @@ test('atomic persistence restores compact per-workspace outcomes without output 
   const first = createRunPersistence(io);
   await first.ready;
   const cwd = '/work/private-project';
-  assert.equal(await first.recordResult(cwd, {
+  const firstWrite = await first.recordResultAndGetPrevious(cwd, {
     status: 'failed',
     runner: 'pytest',
     finishedAt: NOW,
@@ -78,7 +78,9 @@ test('atomic persistence restores compact per-workspace outcomes without output 
     command: 'pytest --secret-token',
     cwd,
     output: 'DO_NOT_STORE',
-  }), true);
+  });
+  assert.equal(firstWrite.available, true);
+  assert.equal(firstWrite.previous, null);
 
   assert.equal(options.mode, 0o600);
   assert.equal(options.dirMode, 0o700);
@@ -92,5 +94,6 @@ test('atomic persistence restores compact per-workspace outcomes without output 
   assert.equal(records[0].failures[0].file, 'tests/test_secret.py');
   assert.equal(records[0].failures[0].message, undefined);
   assert.equal((await restarted.latestForWorkspace(cwd)).status, 'failed');
+  assert.equal((await restarted.recordResultAndGetPrevious(cwd, { status: 'passed', finishedAt: NOW + 1000 })).previous.status, 'failed');
   assert.equal(records[0].workspaceKey, workspaceStorageKey(cwd));
 });

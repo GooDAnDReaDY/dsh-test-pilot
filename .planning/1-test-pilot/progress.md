@@ -37,8 +37,10 @@
 
 ## Next
 
-- Implement #5, then continue #8 and #10. Test suites, profile changes, merge,
-  deploy and publication remain deferred.
+- Issue #5 notification transitions are implemented and documented; unit and
+  integration coverage is authored but remains unrun by owner request. Continue
+  with #8 and #10. Test suites, profile changes, merge, deploy and publication
+  remain deferred.
 
 ## Current blocker
 

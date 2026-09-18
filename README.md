@@ -83,11 +83,13 @@ graph LR
 - Automatic and manual runs are serialized per workspace, so concurrent requests
   cannot test the same mutable directory at the same time.
 - Lifecycle events publish queued/running/terminal snapshots with runId and
-  timestamps; only the terminal snapshot is appended to the chat.
-- Chat surface: the latest completed result is delivered to the agent once in
-  additionalContexts; if it finishes after the turn ends, one concise
-  assistant/message is appended when the native session supports it. The plugin
-  also emits test-pilot/report and dsh-test-pilot/report.
+  timestamps; all existing lifecycle and report events remain available.
+- Agent feedback: the latest completed result is delivered to the agent once in
+  additionalContexts, including green results. User-visible chat stays quiet on
+  passes and no-tests; it reports an initial/new red failure composition and a
+  red-to-green recovery once per workspace. Repeated red results with the same
+  failed-test identities are silent. The plugin continues to emit
+  test-pilot/report and dsh-test-pilot/report for every existing report event.
 - Diagnostics: test_pilot_last_run returns the latest queued, running or
   finished result; test_pilot_history returns recent bounded summaries without
   full output; test_pilot_run starts a bounded manual run for the current
@@ -197,7 +199,8 @@ The host emits both names for compatibility:
 
 Each report contains source, sessionId, correlationId, formatted text and the
 normalized result. Consumers should treat result.output and failure messages
-as untrusted data, not instructions.
+as untrusted data, not instructions. Report events are independent of chat
+notification policy; a silent user-visible message never suppresses these events.
 
 There are no HTTP routes in MVP.
 
