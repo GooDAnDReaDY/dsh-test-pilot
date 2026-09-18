@@ -92,9 +92,11 @@ MVP-only sequence above:
    mutations; two-second per-turn debounce, stale-run cancellation through
    exec.signal, completed additionalContexts, turn/end failsafe and completion
    nudge. Integration tests are authored but deliberately unrun.
-4. #9 IN PROGRESS: versioned atomic state, bounded history, persist counts,
-   timestamps and failed-test identities only; never persist full command output.
-5. #5: keep plugin report events; chat only on meaningful red/green transitions,
+4. #9 DONE (implementation): versioned atomic state, per-workspace last result,
+   50-row/30-day bounded history, and failed-test identities/counts only; never
+   persist commands, absolute paths or full command output. Tests are authored,
+   deliberately unrun.
+5. #5 NEXT: keep plugin report events; chat only on meaningful red/green transitions,
    silent green/skips, compare failed-test identities.
 6. #8: native settings card and session-header status chip; en/zh UI only.
 7. #10 last: keep test_pilot_status and test_pilot_run; remove two redundant

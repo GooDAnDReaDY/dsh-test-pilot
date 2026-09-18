@@ -27,24 +27,18 @@
 - Authored #6 tests for event summaries, fallback, mapping, report scope and argv
   safety; test execution remains deferred by owner request.
 
-## Completed
-
 - #4 implementation is in commit 0dc2ad1 on PR #3. The post-execute hook,
   debounce, cancellation, in-turn report, turn/end failsafe and completion
   nudge are documented in issue #4 and PR #3. Syntax and whitespace checks
   passed; integration tests remain authored but unrun.
-
-## Current work
-
-- #9 adds versioned atomic persistence under the DSH data directory. Only
-  compact result summaries and failed-test identities are stored; full output,
-  commands and absolute workspace paths stay out of the file. History and
-  workspace count/age are bounded. Persistence tests are being authored, not run.
+- #9 implementation is in commit 9f52868 on PR #3. Versioned atomic state
+  preserves compact per-workspace summaries; no commands, absolute workspace
+  paths or full output are stored. Persistence tests are authored but unrun.
 
 ## Next
 
-- Finish #9, then continue #5, #8 and #10. Test suites, profile changes,
-  merge, deploy and publication remain deferred.
+- Implement #5, then continue #8 and #10. Test suites, profile changes, merge,
+  deploy and publication remain deferred.
 
 ## Current blocker
 
