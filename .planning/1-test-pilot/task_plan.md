@@ -99,13 +99,27 @@ MVP-only sequence above:
 5. #5 IMPLEMENTED: preserve report events and agent contexts; chat is silent on
    green/skips and repeated identical red results, and reports initial/new red
    compositions plus red-to-green recovery. Tests are authored, not run.
-6. #8: native settings card and session-header status chip; en/zh UI only.
-7. #10 last: keep test_pilot_status and test_pilot_run; remove two redundant
-   tools after descriptions stabilize.
+6. #8 PARTIAL: the native settings card, workspace rules and en/zh strings were
+   implemented in 12646fb. The session-header status chip awaits the secure,
+   session/workspace-bound read-only API tracked separately as issue #11.
+7. #10 DONE: only test_pilot_status and test_pilot_run remain; old last-run and
+   history tools were removed in 190fb6c, with optional status history bounded
+   to 20 summaries.
 8. Update spec, design, index, all README languages, Gitea and Memory Brain;
    inspect diff and run non-test static checks only.
 9. Defer all test runs, package installation, profile changes/restarts, merge,
    deploy and publication until separately requested/approved.
+
+## Current status (2026-09-18)
+
+- #4, #5, #6, #7, #9 and #10 have implementation commits in PR #3; #8 settings
+  card is implemented, but the header chip remains pending issue #11.
+- Issues #4-#10 remain open until PR merge and the deferred verification cycle.
+- Issue #11 is open as the API/security prerequisite; endpoint implementation
+  is not included in the currently approved block.
+- Unit/contract tests and MiniPC DSH composition/UI acceptance are intentionally
+  deferred; only static checks have been run. No install/restart, merge, deploy
+  or publication has occurred.
 
 No self-healing, generated tests, commit gate, automatic edits or external
 telemetry. Installed MiniAI source does not expose workspaceChanges or
