@@ -27,19 +27,23 @@
 - Authored #6 tests for event summaries, fallback, mapping, report scope and argv
   safety; test execution remains deferred by owner request.
 
+## Completed
+
+- #4 implementation is in commit 0dc2ad1 on PR #3. The post-execute hook,
+  debounce, cancellation, in-turn report, turn/end failsafe and completion
+  nudge are documented in issue #4 and PR #3. Syntax and whitespace checks
+  passed; integration tests remain authored but unrun.
+
 ## Current work
 
-- #4 is implemented in the worktree: tools/post-execute observes successful
-  write/edit/str_replace_editor mutations, coalesces for two seconds, cancels
-  stale runs via exec.signal, returns a completed undelivered result through
-  additionalContexts, and flushes pending work at turn/end. The completion
-  nudge and EN/RU/ZH documentation are updated. Integration tests are authored,
-  not run.
+- #9 adds versioned atomic persistence under the DSH data directory. Only
+  compact result summaries and failed-test identities are stored; full output,
+  commands and absolute workspace paths stay out of the file. History and
+  workspace count/age are bounded. Persistence tests are being authored, not run.
 
 ## Next
 
-- Review/static-check #4, update its Gitea issue and PR #3, commit and record
-  Memory Brain; then continue #9, #5, #8 and #10. Tests, profile changes,
+- Finish #9, then continue #5, #8 and #10. Test suites, profile changes,
   merge, deploy and publication remain deferred.
 
 ## Current blocker

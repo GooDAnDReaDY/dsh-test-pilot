@@ -9,10 +9,11 @@ without starting an uncontrolled repair loop.
 ## Status
 
 MVP runtime and runner/parser baseline implemented, including current-turn
-changed-test selection and conservative full-suite fallback. The runner/parser
-layer includes pytest, Jest/Vitest, Go, Rust/Cargo, TAP and TypeScript compiler
-adapters. Full Loader profile validation and isolated MiniPC installation are
-deferred to the later test cycle.
+changed-test selection, in-turn background runs and versioned bounded persistence
+of compact per-workspace outcomes. The runner/parser layer includes pytest,
+Jest/Vitest, Go, Rust/Cargo, TAP and TypeScript compiler adapters. Full Loader
+profile validation and isolated MiniPC installation are deferred to the later
+test cycle.
 
 ## Documents
 
@@ -32,7 +33,8 @@ later write cancels a stale run; exec.signal cancels pending and active work.
 The handler never waits for the test process and attaches only a completed,
 undelivered result through additionalContexts. turn/end flushes pending work
 as a safety net. Diagnostic tools expose the latest structured result and a
-manual full-suite run path.
+manual full-suite run path. Compact terminal summaries survive restarts; raw
+output and absolute workspace paths do not enter the state file.
 
 Self-healing, commit blocking, test generation, dashboard UI and external
 telemetry remain roadmap items.

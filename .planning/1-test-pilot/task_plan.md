@@ -25,7 +25,7 @@ parser/result contract, turn/end listener, duplicate suppression, last-run
 status and a concise user-visible report.
 
 Out of scope for MVP: self-healing repair turns, commit blocking, test
-generation, persistent history, web dashboard, arbitrary shell evaluation,
+generation, extended history/artifacts, web dashboard, arbitrary shell evaluation,
 automatic commit/push/deploy and external telemetry.
 
 ## Ordered actions
@@ -88,12 +88,12 @@ MVP-only sequence above:
    ctx.workspaceChanges.summary(sessionId, event.seq), capture per-turn changes,
    map source-to-test, explain conservative full-suite fallback and always run
    the full suite manually. Tests are authored but deliberately unrun.
-3. #4 IN PROGRESS: tools/post-execute observes successful file mutations;
-   two-second per-turn debounce, cancel stale runs through exec.signal, return
-   only completed additionalContexts, turn/end flush failsafe, and completion
-   nudge in system prompt. Integration tests are authored but deliberately unrun.
-4. #9: versioned atomic state, bounded history, persist counts/timestamps and
-   failed-test identities only; never persist full command output.
+3. #4 DONE (implementation): tools/post-execute observes successful file
+   mutations; two-second per-turn debounce, stale-run cancellation through
+   exec.signal, completed additionalContexts, turn/end failsafe and completion
+   nudge. Integration tests are authored but deliberately unrun.
+4. #9 IN PROGRESS: versioned atomic state, bounded history, persist counts,
+   timestamps and failed-test identities only; never persist full command output.
 5. #5: keep plugin report events; chat only on meaningful red/green transitions,
    silent green/skips, compare failed-test identities.
 6. #8: native settings card and session-header status chip; en/zh UI only.

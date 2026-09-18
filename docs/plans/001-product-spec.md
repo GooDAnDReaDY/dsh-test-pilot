@@ -51,7 +51,7 @@ session/event как страховка на turn/end. События tree/settl
   нормализованный результат.
 - Сообщение в чат вида «42 passed, 2 failed» с exit code и кратким списком
   failure; полный лог доступен только через bounded artifact.
-- Сохранение последнего результата и correlation id в памяти плагина.
+- Версионированное атомарное сохранение краткого результата по workspace и ограниченной истории (50 workspace, 50 записей, 30 дней); абсолютный путь workspace хешируется, команды и полный вывод на диск не попадают.
 - Unit-тесты для parser/policy/state machine и real-composition smoke-тест
   с mock runner; сеть и реальные секреты в тестах запрещены.
 
@@ -84,7 +84,7 @@ agent loop и принудительное редактирование тест
 - 0.1.3 — генератор предложений тестов по diff с объяснением покрытия.
 - 0.1.4 — approval-gated self-healing с лимитами и отменой.
 - 0.1.5 — commit regression gate и режимы warning/block.
-- 0.1.6 — история прогонов, артефакты и сравнение запусков.
+- 0.1.6 — расширенная история, артефакты и сравнение прогонов поверх краткой bounded-истории, сохраняемой в 0.1.0.
 - 0.1.7 — web-карточка статуса, empty/loading/error/success states.
 - 0.1.8 — дополнительные runners и parser contract tests.
 - 0.1.9 — parallel-safe jobs, cancellation, flaky-test quarantine policy.

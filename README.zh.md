@@ -82,7 +82,7 @@ graph LR
 - 诊断工具：test_pilot_last_run 返回最新的 queued、running 或完成结果；
   test_pilot_history 返回最近的有界摘要且不包含完整 output；
   test_pilot_run 在当前工作区手动执行有界命令。
-- 保留策略：内存中只保留有界 run records 和事件 key 集合。
+- 保留策略：简要终态会原子写入 `$DSH_HOME/data/dsh-test-pilot/state.json`。工作区以 SHA-256 键表示，不保存绝对路径；磁盘中仅保存状态、runner、统计数字、时间/耗时和失败测试标识，不保存命令或完整输出。最多保留 50 个工作区和 50 条历史记录，期限为 30 天。损坏文件或未知 schema 版本按空状态处理；详细输出仅留在内存中。
 
 ### 源代码模块
 
@@ -98,6 +98,7 @@ graph LR
 | lib/turn-changes.js | 有界的回合变更跟踪及旧版 write/edit 回退 |
 | lib/changed-tests.js | 基于约定的安全关联测试选择和完整套件回退 |
 | lib/state.js | 幂等性、运行生命周期和有界结果状态 |
+| lib/persistence.js | 版本化原子工作区摘要与有界保留 |
 
 ## 安装
 
@@ -106,8 +107,7 @@ dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
 此软件包面向 DSH web profile。请通过 profile 的 settings card 启用或停用
-自动运行并选择命令。Test Pilot 需要与 DSH filesystem、subprocess、tools 和 settings
-服务一起安装。
+自动运行并选择命令。Test Pilot 需要 DSH filesystem、subprocess、tools、settings 服务，以及 dsh-home-paths 和 dsh-atomic-write 核心包。
 
 ## 配置
 
@@ -198,7 +198,7 @@ MVP 没有 HTTP routes。
 - MVP 不执行网络请求，也不修改 Git。
 - MVP 明确不包含自动修复：测试失败只报告给主 agent，由主 agent 决定是否以及
   如何修复。
-- 审批 gate、回归基线、持久历史、测试生成器和 dashboard UI 属于后续路线图。
+- 审批 gate、回归基线、扩展持久历史、测试生成器和 dashboard UI 属于后续路线图。
 
 ## 开发
 

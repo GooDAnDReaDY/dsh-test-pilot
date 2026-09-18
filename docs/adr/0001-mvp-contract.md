@@ -53,6 +53,10 @@ surfaceOp: append when supported. This is a session-log update, not a new
 agent turn. If chat append is unavailable, the bounded report event and
 test_pilot_last_run remain available.
 
+## Persistent state boundary
+
+Completed outcomes are stored in the DSH data tree at `dshHomePath('data', 'dsh-test-pilot', 'state.json')`. The JSON document is schema-versioned and replaced with `writeFileAtomic` under `withFileLock`; the file and directory use owner-only modes. Workspace identity is a SHA-256 key, not an absolute path. Only status, runner, counts, completion time/duration and bounded failed-test identities are persisted—never command text, workspace path, messages or full output. The store keeps at most 50 workspaces and 50 history rows for 30 days. Corrupt or unsupported-version data loads as empty; detailed output remains process-memory-only.
+
 ## Rejected alternatives
 
 - tree/settled: not confirmed in the current host API.

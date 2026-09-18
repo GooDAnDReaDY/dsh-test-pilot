@@ -92,7 +92,7 @@ graph LR
   finished result; test_pilot_history returns recent bounded summaries without
   full output; test_pilot_run starts a bounded manual run for the current
   workspace.
-- Retention: only bounded run records and event keys are retained in memory.
+- Retention: terminal summaries are atomically stored under `$DSH_HOME/data/dsh-test-pilot/state.json`. Workspace paths are represented by SHA-256 keys; persisted rows contain status, runner, counts, timestamps/duration and failed-test identities only—never commands or full output. At most 50 workspaces and 50 history entries are retained for 30 days. Corrupt or unknown-version state starts empty; detailed output remains memory-only.
 
 ### Source modules
 
@@ -108,6 +108,7 @@ graph LR
 | lib/turn-changes.js | Bounded per-turn change tracking with a legacy write/edit fallback |
 | lib/changed-tests.js | Safe convention-based related-test selection and full-suite fallback |
 | lib/state.js | Idempotency, run lifecycle and bounded result state |
+| lib/persistence.js | Versioned atomic workspace summaries and bounded retention |
 
 ## Installation
 
@@ -117,7 +118,7 @@ dsh plugin --profile web add @goodandready/dsh-test-pilot
 
 The package is designed for a DSH web profile. Use a profile-specific settings
 card to enable or disable automatic runs and select the command. Test Pilot
-must be installed alongside the DSH filesystem, subprocess, tools and settings services.
+needs the DSH filesystem, subprocess, tools and settings services, plus the dsh-home-paths and dsh-atomic-write core packages.
 
 ## Configuration
 
@@ -221,8 +222,8 @@ There are no HTTP routes in MVP.
 - MVP performs no network calls and no Git mutation.
 - Self-healing is intentionally excluded from the MVP: a failure is reported
   to the main agent, which decides whether and how to fix it.
-- Approval gates, regression baselines, persistent history, generated tests and
-  dashboard UI are roadmap work.
+- Approval gates, regression baselines, expanded persistent history, generated
+tests and dashboard UI are roadmap work.
 
 ## Development
 

@@ -29,6 +29,16 @@ test('tracks queued, running and terminal snapshots for a run id', () => {
   const finished = state.finish('run-1', { status: 'passed', runner: 'pytest' });
   assert.equal(finished.status, 'passed');
 });
+test('restores persisted results into the bounded diagnostic history', () => {
+  const state = createPilotState();
+  state.restore([
+    { status: 'passed', runner: 'pytest', finishedAt: 10, counts: { passed: 2 } },
+    { status: 'failed', runner: 'pytest', finishedAt: 20, counts: { failed: 1 } },
+  ]);
+  assert.equal(state.latest().status, 'failed');
+  assert.deepEqual(state.list(2).map((run) => run.status), ['failed', 'passed']);
+  assert.equal(state.latest().output, '');
+});
 test('returns newest bounded history first', () => {
   const state = createPilotState();
   state.claim('a'); state.finish('a', { status: 'passed' });

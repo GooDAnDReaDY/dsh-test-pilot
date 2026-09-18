@@ -90,7 +90,7 @@ graph LR
 - Диагностика: test_pilot_last_run показывает последний queued, running или
   завершённый результат; test_pilot_history возвращает краткую историю без
   полного output; test_pilot_run запускает команду вручную.
-- Retention: в памяти сохраняются ограниченные run records и event keys.
+- Retention: краткие итоги атомарно хранятся в `$DSH_HOME/data/dsh-test-pilot/state.json`. Вместо абсолютного пути workspace используется SHA-256-ключ; на диск попадают только статус, runner, числа, время/длительность и идентификаторы упавших тестов — не команда и не полный вывод. Хранятся максимум 50 workspace и 50 записей истории за 30 дней. Повреждённый файл или неизвестная версия схемы считаются пустым состоянием; подробный вывод остаётся только в памяти.
 
 ### Модули исходного кода
 
@@ -106,6 +106,7 @@ graph LR
 | lib/turn-changes.js | Ограниченное отслеживание изменений хода и fallback write/edit |
 | lib/changed-tests.js | Безопасный выбор связанных тестов и fallback на полный набор |
 | lib/state.js | Idempotency, lifecycle запуска и ограниченное состояние результатов |
+| lib/persistence.js | Версионированные атомарные итоги workspace и ограничение истории |
 
 ## Установка
 
@@ -114,7 +115,7 @@ dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
 Плагин рассчитан на web profile DSH. В settings card выберите runner и команду.
-Для работы нужны сервисы DSH filesystem, subprocess, tools и settings.
+Для работы нужны сервисы DSH filesystem, subprocess, tools и settings, а также core-пакеты dsh-home-paths и dsh-atomic-write.
 
 ## Конфигурация
 
@@ -212,8 +213,8 @@ HTTP routes в MVP отсутствуют.
 - MVP не обращается в сеть и не меняет Git.
 - Self-healing намеренно не входит в MVP: при падении плагин только сообщает
   результат основному агенту, а решение об исправлении остаётся за ним.
-- Approval gate, regression baseline, persistent history, test generation и
-  dashboard UI находятся в roadmap.
+- Approval gate, regression baseline, расширенная persistent history,
+  генерация тестов и dashboard UI находятся в roadmap.
 
 ## Разработка
 
