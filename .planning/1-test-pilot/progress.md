@@ -64,3 +64,40 @@ has been changed in this implementation step.
 
 - 2026-09-18: Owner approved #4-#10 in PR #3 and confirmed the expected DEV-root
   .worktrees entry may be ignored without touching root. Tests remain deferred.
+
+## 2026-09-18 follow-on: issue #11
+
+- Owner explicitly authorized implementation of the remaining #8 session chip
+  through the read-only API tracked in issue #11.
+- Work remains in branch docs/issue-1-baseline-dsh-test-pilot and PR #3; the
+  branch/worktree preflight showed only this feature worktree plus DEV main.
+- Current phase: verify official/target DSH route, auth/origin and session
+  binding contracts before any endpoint code.
+- No profile changes, package installs, restarts, tests, merge, deploy, or
+  publication are authorized by this step; tests remain deferred.
+## 2026-09-18 issue #11 implementation update
+
+- Research completed against pinned DSH core commit
+  f02c691a2120b8c53e1fcedeac1b4d59d91067fa. Authenticated Connection Fetch
+  registration, Host/Origin checks, Session Controller list semantics and
+  native session-header slot are verified. No DSH core issue is needed.
+- Implemented `lib/status.js`: GET-only read projection, strict single sessionId
+  validation, exact match against Host-visible Session summaries, 15-second /
+  128-entry positive binding cache, workspace-key lookup, stale/disabled states,
+  allowlisted response fields, no-store headers and generic errors.
+- Extended state/persistence with workspace-scoped in-memory lookup and an
+  additive UUID-only run correlation value; schema version 1 remains compatible.
+- Implemented the native header chip in `lib/client.js`: en/zh labels, 10-second
+  polling while visible, hidden-tab pause, abort on hide/unmount/session switch,
+  compact accessible result, Escape/outside-pointer dismissal.
+- Added ADR 0002 and updated product/design/index/README documentation.
+- No test suites, DSH profile, install/restart, deploy, merge or publication
+  have been run or performed. Test and visual acceptance remain deferred.
+
+### Next
+
+Static syntax, JSON and staged diff checks passed; no test command was run.
+Next: commit/push and update issue #11. Do not run the DSH preflight because it
+invokes the deferred test suite.
+
+- Added focused status/state/persistence test source; test suites remain unrun.

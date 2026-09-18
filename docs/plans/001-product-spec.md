@@ -98,3 +98,60 @@ output, non-zero exit и отмену. Real-composition test
 проверяет загрузку settings card, регистрацию event listener/tool и
 пользовательское сообщение. Smoke run даёт воспроизводимый structured result.
 Документация описывает конфиг, threat model, ограничения и rollback policy.
+## Issue #11: session-header status chip
+
+### Purpose and scope
+
+Issue #11 completes the session-header chip requested with issue #8. It is a
+read-only view of Test Pilot's existing automatic and manual run state. The chip
+does not start tests, change files, block approval, or alter chat notification
+policy. A full history dashboard remains out of scope.
+
+### Implementation contract
+
+1. The Host registers only GET `/api/dsh-test-pilot/status` through the DSH
+   Connection Fetch API. DSH Connection owns browser authentication and Origin
+   trust. No unauthenticated web-server route or cross-origin fallback exists.
+2. The request accepts exactly one bounded `sessionId`; it never accepts cwd,
+   a workspace path/key, command, or run id. The Host matches the ID exactly
+   against `sessionController.list({}, request.signal)` and takes cwd only
+   from that visible Host-owned summary. No Session is resumed or inspected.
+3. A positive session-to-cwd binding is held only in a 15-second, 128-entry
+   in-memory cache. Workspace run lookup uses the existing SHA-256 storage key.
+4. The response is an allowlist projection: status, last status, timestamps,
+   duration, bounded counts, and only a UUID-shaped correlation id. It contains
+   no session id, workspace key/path, command/arguments, output, prompt,
+   filename, test name, failure detail, or raw exception. Responses are
+   no-store and errors are generic.
+5. The chip polls every ten seconds while visible and aborts on hidden tab,
+   unmount, or session switch. Its click opens a compact accessible summary.
+   A terminal result older than seven days is stale; disabled settings remain
+   visible as disabled. Endpoint errors degrade to unknown without affecting
+   the DSH turn.
+
+### Ordered work and current state
+
+- [x] Verify the DSH Connection Fetch route, Host/Origin authentication boundary,
+      visible Session list, cwd projection, and native session-header slot
+      against the pinned DSH core source.
+- [x] Record the decision and alternatives in
+      `docs/adr/0002-session-status-chip.md`.
+- [x] Implement Host-side session binding, strict request validation,
+      workspace-scoped status projection, bounded cache, no-store response, and
+      generic errors.
+- [x] Persist only a UUID-shaped run correlation id additively; schema version
+      1 remains readable for existing state files.
+- [x] Implement the native session-header chip, English and Chinese labels,
+      visible-tab polling, cancellation, accessible report region, and
+      status-only detail.
+- [x] Update design, index, and English/Chinese/Russian usage documentation.
+- [ ] Run focused unit/contract tests and the full deferred test matrix.
+- [ ] Install the packaged candidate on isolated MiniPC; perform visual
+      acceptance and cleanup. These steps remain deferred until the owner asks
+      to begin testing.
+
+### Dependencies
+
+Host Connection and Session Controller APIs are required at
+`>=0.1.2-alpha.5 <1.0.0`. There is no fallback to a weaker route or to a
+browser-supplied workspace identifier.

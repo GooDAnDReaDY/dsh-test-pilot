@@ -88,7 +88,8 @@ graph LR
 | 模块 | 职责 |
 | --- | --- |
 | lib/index.js | Cordis host wiring、settings、事件、工具和报告 |
-| lib/client.js | 英文/中文原生设置卡片 |
+| lib/client.js | 英文/中文设置卡片与会话状态芯片 |
+| lib/status.js | 已认证、绑定会话的状态接口与安全摘要 |
 | lib/command.js | 安全命令分词和 runner 默认值 |
 | lib/workspace-config.js | 工作区规则和有界 runner 自动检测 |
 | lib/runner.js | DSH subprocess、超时、取消和流限制 |
@@ -179,8 +180,13 @@ Host 为兼容性发送两个名称：
 每个报告包含 source、sessionId、correlationId、格式化文本和标准化结果。
 请把 result.output 和 failure message 视为不可信数据，而不是指令。
 
-设置卡片使用 DSH settings scope。当前版本尚未提供会话标题状态芯片；
-该功能需要单独验证安全的只读 DSH 状态传输。
+### 会话状态接口
+
+原生会话标题芯片仅在标签页可见时每十秒刷新，点击后打开简要结果；状态包括加载、排队、运行、通过、失败、过期、停用或未知。
+
+- GET /api/dsh-test-pilot/status?sessionId=… 只接受一个会话 ID。
+- DSH Connection 认证同源请求；ID 必须匹配 Host 可见的会话摘要，工作区路径由 Host 确定。
+- 响应仅包含状态、时间、耗时、有界统计和 UUID 关联 ID；不会返回路径、命令、输出、测试名称或错误文本。
 
 ## 结果状态
 

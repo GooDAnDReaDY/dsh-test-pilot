@@ -15,12 +15,16 @@ Jest/Vitest, Go, Rust/Cargo, TAP and TypeScript compiler adapters. Full Loader
 profile validation and isolated MiniPC installation are deferred to the later
 test cycle.
 
+The native session-header status chip and authenticated read-only status route
+are implemented in issue #11. The test suite and visual acceptance are still
+deferred until the owner starts the separate test cycle.
 ## Documents
 
 - [Product specification and roadmap](docs/plans/001-product-spec.md)
 - [Design contract](docs/design/DESIGN.md)
 - [Reuse-first research](docs/research/reuse-first.md)
 - [MVP runtime ADR](docs/adr/0001-mvp-contract.md)
+- [Authenticated session status ADR](docs/adr/0002-session-status-chip.md)
 - [English README](README.md)
 - [Russian overview](README.ru.md)
 - [中文概览](README.zh.md)
@@ -35,6 +39,11 @@ undelivered result through additionalContexts. turn/end flushes pending work
 as a safety net. Diagnostic tools expose the latest structured result and a
 manual full-suite run path. Compact terminal summaries survive restarts; raw
 output and absolute workspace paths do not enter the state file.
+The session header also polls the authenticated Test Pilot status projection
+for its Host-verified Session workspace. It shows only status, timestamps,
+duration, bounded counts and a safe UUID; it does not expose command output,
+paths, filenames, test names or failure text. See ADR 0002 for the route and
+privacy contract.
 
-Self-healing, commit blocking, test generation, dashboard UI and external
+Self-healing, commit blocking, test generation, a full dashboard UI and external
 telemetry remain roadmap items.

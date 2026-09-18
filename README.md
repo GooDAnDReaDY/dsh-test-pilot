@@ -101,7 +101,8 @@ graph LR
 | Module | Responsibility |
 | --- | --- |
 | lib/index.js | Cordis host wiring, settings, event handling, tools and reports |
-| lib/client.js | English/Chinese native settings card |
+| lib/client.js | English/Chinese settings card and session-header status chip |
+| lib/status.js | Authenticated, session-bound status route and safe projection |
 | lib/command.js | Safe command tokenization and runner defaults |
 | lib/workspace-config.js | Workspace rules and bounded runner auto-detection |
 | lib/runner.js | DSH subprocess invocation, timeout, cancellation and stream limits |
@@ -207,9 +208,13 @@ normalized result. Consumers should treat result.output and failure messages
 as untrusted data, not instructions. Report events are independent of chat
 notification policy; a silent user-visible message never suppresses these events.
 
-The settings card uses DSH settings scope. A live session-header status chip is
-not included yet; it requires a separately validated read-only DSH status
-transport.
+### Session status endpoint
+
+The native session-header chip polls every ten seconds while the tab is visible and opens a compact result on click; it displays loading, queued, running, passed, failed, stale, disabled, or unknown.
+
+- GET /api/dsh-test-pilot/status?sessionId=… accepts exactly one session ID.
+- DSH Connection authenticates the same-origin request; the ID must match a Host-visible session summary. The Host derives the workspace.
+- The response contains only status, timestamps, duration, bounded counts, and a UUID correlation ID; it never returns paths, commands, output, test names, or failure text.
 
 ## Result statuses
 

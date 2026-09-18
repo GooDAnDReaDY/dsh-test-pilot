@@ -140,3 +140,46 @@ without changing/synchronizing the root.
 | A few read-only SSH wrappers failed on printf option parsing or nested quoting; an early grep also exceeded output limits. | Reissued targeted read-only commands with smaller output and safer quoting; no project/profile mutations resulted. |
 | Some later plan/README patch hunks used mismatched counts or context and created exact .rej files. | Inspected and removed only those generated rejects, then reapplied intended edits; no source data was lost. |
 | In-memory patch metadata/encoding was rejected before a documentation edit. | No files changed; switched to an exact-anchor-generated unified diff through the Git wrapper. |
+| Initial PowerShell patch encoding/hunk counts failed; whitespace check found extra blank EOF lines. | Switched to UTF-8/base64 via the Git wrapper, corrected the patch, removed trailing blanks, and reran staged diff checks. |
+
+## Authorized continuation: issue #11 (2026-09-18)
+Status: research in progress.
+
+The owner explicitly authorized finishing the remaining session-header chip
+after issue #11 was created. Continue in the existing feature branch and PR #3.
+
+### Next step
+
+Verify current DSH route registration, browser authentication/origin checks,
+and trusted session/workspace binding from official docs and the target source.
+If no safe supported binding exists, stop plugin implementation and open a
+separate DSH core issue. Tests/runtime/UI acceptance remain deferred.
+## Issue #11 implementation update (2026-09-18)
+
+This section supersedes the earlier issue #11 status above. Official and pinned
+target-source research is complete: DSH Connection provides an authenticated
+exact Fetch route and Session Controller exposes non-resuming visible summaries
+with Host-owned cwd. No DSH core issue is required.
+
+- [x] ADR 0002 records route, auth boundary, session binding, allowlist schema,
+      TTLs, stale policy, polling, compatibility, and rejected alternatives.
+- [x] Implement the GET-only status route, session-id validation and bounded
+      positive binding cache; derive workspace only from the matched Host row.
+- [x] Project only safe run fields and persist only a UUID correlation id
+      additively; existing schema-version-1 records remain readable.
+- [x] Add the native session-header chip, English/Chinese labels, bounded
+      ten-second visible-tab polling and request cancellation.
+- [x] Update the product spec, design notes, index, and three README languages.
+- [x] Execute static syntax/JSON/whitespace checks only; do not run test suites.
+- [ ] Leave focused/full tests and MiniPC install/visual acceptance for the
+      later owner-requested test cycle.
+
+### Next step
+
+Static syntax, JSON, and staged whitespace checks passed. Commit and push this
+implementation/doc chunk to PR #3 and report the result in Gitea issue #11.
+Do not run tests, merge, install, restart, deploy, or publish.
+
+Focused test source for session validation/binding/cache, allowlisted projection,
+stale/disabled behavior, extra query rejection, workspace isolation, and UUID
+persistence has been added. It remains unexecuted by owner request.

@@ -66,6 +66,7 @@ test('atomic persistence restores compact per-workspace outcomes without output 
   const firstWrite = await first.recordResultAndGetPrevious(cwd, {
     status: 'failed',
     runner: 'pytest',
+    runId: '4a53c3f6-2cf7-4e5c-8b5a-9771f33ddf53',
     finishedAt: NOW,
     durationMs: 850,
     counts: { total: 2, passed: 1, failed: 1 },
@@ -91,9 +92,22 @@ test('atomic persistence restores compact per-workspace outcomes without output 
   const restarted = createRunPersistence(io);
   const records = await restarted.ready;
   assert.equal(records.length, 1);
+  assert.equal(records[0].correlationId, '4a53c3f6-2cf7-4e5c-8b5a-9771f33ddf53');
   assert.equal(records[0].failures[0].file, 'tests/test_secret.py');
   assert.equal(records[0].failures[0].message, undefined);
   assert.equal((await restarted.latestForWorkspace(cwd)).status, 'failed');
   assert.equal((await restarted.recordResultAndGetPrevious(cwd, { status: 'passed', finishedAt: NOW + 1000 })).previous.status, 'failed');
   assert.equal(records[0].workspaceKey, workspaceStorageKey(cwd));
+});
+
+test('legacy and non-UUID correlation values never become public run ids', () => {
+  const workspaceKey = 'a'.repeat(64);
+  const parsed = parsePersistedState(JSON.stringify({
+    schemaVersion: 1,
+    history: [{
+      workspaceKey, status: 'passed', finishedAt: NOW,
+      correlationId: 'session-id:turn-id', counts: { passed: 1 },
+    }],
+  }), NOW);
+  assert.equal(parsed.history[0].correlationId, null);
 });

@@ -57,3 +57,14 @@ test('preserves lifecycle timestamps across snapshots', () => {
   assert.equal(typeof running.startedAt, 'number');
   assert.ok(finished.finishedAt >= running.startedAt);
 });
+
+test('workspace-scoped status lookup does not mix workspaces', () => {
+  const state = createPilotState();
+  state.claim('one-run');
+  state.finish('one-run', { status: 'passed', cwd: '/workspace/one' });
+  state.claim('two-run');
+  state.finish('two-run', { status: 'failed', cwd: '/workspace/two' });
+
+  assert.deepEqual(state.listForWorkspace('/workspace/one').map((run) => run.status), ['passed']);
+  assert.deepEqual(state.listForWorkspace('/workspace/two').map((run) => run.status), ['failed']);
+});
