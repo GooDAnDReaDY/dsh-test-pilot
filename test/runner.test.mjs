@@ -27,6 +27,37 @@ test('runs through argv and returns structured result', async () => {
   assert.equal(result.status, 'passed');
   assert.equal(result.counts.passed, 3);
 });
+test('appends selector arguments as argv elements without a shell', async () => {
+  let argv;
+  const subprocess = {
+    spawn(options) {
+      argv = options.argv;
+      return {
+        collected: {
+          stdout: { readFrom: () => ({ text: 'Test Suites: 1 passed, 1 total' }) },
+          stderr: { readFrom: () => ({ text: '' }) },
+        },
+        done: Promise.resolve({ exitCode: 0 }),
+      };
+    },
+  };
+  await runTestCommand({
+    subprocess, cwd: '/workspace', runner: 'jest', command: 'npx jest',
+    args: ['--runTestsByPath', 'test/a.test.js'],
+  });
+  assert.deepEqual(argv, ['npx', 'jest', '--runTestsByPath', 'test/a.test.js']);
+});
+
+test('rejects NUL bytes in selector arguments before spawning', async () => {
+  let spawned = false;
+  const result = await runTestCommand({
+    subprocess: { spawn() { spawned = true; } },
+    cwd: '/workspace', runner: 'pytest', command: 'pytest -q', args: ['bad' + String.fromCharCode(0) + 'path'],
+  });
+  assert.equal(spawned, false);
+  assert.match(result.output, /without NUL/);
+});
+
 test('classifies a non-zero runner exit', async () => {
   const result = await runTestCommand({
     subprocess: fakeSubprocess({ output: 'boom', exitCode: 2 }),

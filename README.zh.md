@@ -39,8 +39,9 @@
 
 AI 辅助的代码修改需要在回合结束后得到可执行的质量信号。否则，一段
 看似合理的回答可能让测试套件保持损坏状态，直到很久以后才被发现。
-Test Pilot 监听 DSH 原生 session/event 总线，检测 Git 工作区是否发生变化，
-通过 DSH subprocess 服务运行配置好的测试命令，并把有界结果返回到当前会话。
+Test Pilot 读取 DSH 当前回合的文件变更快照；当每个变更文件都能安全映射到
+相关测试时，只运行这些测试，并通过 DSH subprocess 服务执行。只读回合不会启动
+测试进程。映射不完整时会运行完整测试套件，并说明原因。
 
 MVP 是验证器，而不是自动修复代理。它不会编辑文件、启动修复回合、
 提交、推送、阻止审批或发送遥测。
@@ -49,27 +50,32 @@ MVP 是验证器，而不是自动修复代理。它不会编辑文件、启动�
 
 ~~~mermaid
 graph LR
-  A[已完成的 DSH 回合] --> B[session/event turn/end]
-  B --> C{工作区是否变化}
-  C -- 否 --> D[no-tests 报告]
-  C -- 是 --> E[安全 argv 解析器]
-  E --> F[ctx.subprocess.spawn]
-  F --> G[有界 stdout/stderr]
-  G --> H[Runner 解析器]
-  H --> I[标准化和脱敏结果]
-  I --> J[会话 assistant 报告]
-  I --> K[test-pilot/report 事件]
-  I --> L[Last-run 诊断工具]
+  A[已完成的 DSH 回合] --> B[当前回合变更事件]
+  B --> C{是否有可靠的文件变更}
+  C -- 否 --> D[记录 no-tests；不启动进程]
+  C -- 是 --> E[关联测试规划器]
+  E --> F{能否完整安全映射}
+  F -- 是 --> G[只运行关联测试]
+  F -- 否 --> H[运行完整套件并说明范围]
+  G --> I[安全 argv 和 ctx.subprocess]
+  H --> I
+  I --> J[有界输出和 runner 解析]
+  J --> K[标准化结果和报告]
+  K --> L[会话、事件和诊断工具]
 ~~~
 
 ## 功能分解
 
-- Host 生命周期：订阅 session/event，并处理已完成的 turn/end。
-- 工作区策略：使用 Git porcelain status 和 session 工作区约定。缺少
-  Git/subprocess 服务时，系统会放行一次测试尝试。
+- Host 生命周期：订阅 session/event。新版 core 等待最终 workspace/changes 事件；
+  旧版 DSH 在 turn/end 时使用已成功的 write/edit 观测。
+- 变更跟踪：优先使用当前回合的 ctx.workspaceChanges 快照，不会把之前已有的
+  未提交文件误算进本回合。在较旧的 DSH core 上，仅回退到成功的内置 write/edit
+  工具调用；不会通过 Git status 推断本回合改动。
 - 安全执行：解析可执行文件和参数，并拒绝 shell 运算符、命令替换和反引号。
 - Runner 默认值：支持 pytest、Jest、Vitest、Go、Rust/Cargo、TAP 和
   TypeScript 编译器命令；默认使用 pytest。
+- 测试选择：所有变更源文件都有可靠的关联测试时只跑关联测试；否则运行完整套件
+  并说明原因。手动 test_pilot_run 始终运行完整配置命令。
 - 解析器：统一统计、耗时、失败名称/位置、退出状态、超时状态、有界输出和
   类 secret 文本脱敏。
 - 幂等性：每个 session/turn key 只允许一次执行，重复事件会被忽略。
@@ -95,7 +101,9 @@ graph LR
 | lib/runner.js | DSH subprocess、超时、取消和流限制 |
 | lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm 解析 |
 | lib/result.js | 标准化、脱敏和简洁渲染 |
-| lib/workspace.js | 工作区和 Git 变更检测 |
+| lib/workspace.js | Session 工作区和身份信息 |
+| lib/turn-changes.js | 有界的回合变更跟踪及旧版 write/edit 回退 |
+| lib/changed-tests.js | 基于约定的安全关联测试选择和完整套件回退 |
 | lib/state.js | 幂等性、运行生命周期和有界结果状态 |
 
 ## 安装
@@ -120,7 +128,6 @@ workspaceRules:
     runner: auto
     command: ""
 cwd: ""
-skipIfNoChanges: true
 timeoutMs: 120000
 maxOutputBytes: 200000
 ~~~
@@ -132,7 +139,6 @@ maxOutputBytes: 200000
 | command | string | 空 | 可选的可执行文件和参数；拒绝 shell 语法 |
 | workspaceRules | array | [] | 按工作区配置路径、启用状态、runner 和可选命令 |
 | cwd | string | 空 | 明确的工作区；为空时使用 session 工作区 |
-| skipIfNoChanges | boolean | true | Git 没有变更时跳过 |
 | timeoutMs | number | 120000 | 最大执行时间，单位毫秒 |
 | maxOutputBytes | number | 200000 | 每个输出流的收集上限 |
 
@@ -141,6 +147,20 @@ maxOutputBytes: 200000
 `go.mod`、`Cargo.toml` 和 `deno.json`（或 `deno.jsonc`）。找不到支持的 runner 时，自动运行保持
 静默。旧版顶层 `runner` 和 `command` 设置仍作为当前工作区根目录的规则。
 对于无法识别的框架，请显式设置 `runner`；`command` 会覆盖自动检测出的默认命令。
+
+## 自动测试选择
+
+未观察到当前回合的文件变化时，状态记录为 no-tests，不会启动 subprocess。
+对于已变更文件，插件会检查仓库中的测试命名约定（例如匹配的测试文件或
+Go package 测试）。只有每个变更文件都能映射到受支持的关联测试时才缩小范围。
+若有文件无法映射、变更快照被截断，或 runner 无法安全接收目标参数，则运行
+完整套件，并在报告中写明范围和原因。手动 test_pilot_run 始终运行完整套件。
+
+支持 ctx.workspaceChanges 的 DSH 版本会提供当前回合的变更，包括受支持的文件
+工具和 shell 编辑。若 core 已报告文件变更，但变更摘要不可用或不完整，
+插件会运行完整测试套件，而不会静默跳过测试。旧版兼容回退只跟踪成功的内置
+write/edit 调用；旧版 core 中的纯 shell 编辑无法检测，因此不会触发自动运行。
+要完整覆盖 shell 改动，请升级 DSH。
 
 配置命令被当作数据而不是 shell 脚本。请使用可执行文件和参数；
 管道、重定向、命令替换和 shell 链式语法会被拒绝。
@@ -173,7 +193,7 @@ MVP 没有 HTTP routes。
 - failed — 非零退出、失败报告或错误报告。
 - timeout — 到达期限并终止进程。
 - error — 执行失败或输出不可用。
-- no-tests — 工作区没有变更，或成功进程没有输出。
+- no-tests — 没有可靠的当前回合变更，或没有可运行的测试套件。
 
 ## 安全和限制
 

@@ -7,8 +7,9 @@ structured red/green feedback without starting an uncontrolled repair loop.
 
 ## Status
 
-MVP runtime and runner/parser baseline implemented. The runner/parser layer
-includes pytest, Jest/Vitest, Go, Rust/Cargo, TAP and TypeScript compiler
+MVP runtime and runner/parser baseline implemented, including current-turn
+changed-test selection and conservative full-suite fallback. The runner/parser
+layer includes pytest, Jest/Vitest, Go, Rust/Cargo, TAP and TypeScript compiler
 adapters. Full Loader profile validation and isolated MiniPC installation are
 deferred to the later test cycle.
 
@@ -24,11 +25,12 @@ deferred to the later test cycle.
 
 ## Host surface
 
-The host subscribes to the native session/event bus, reacts to completed
-turn/end, invokes ctx.subprocess.spawn with bounded streams and emits a
-plugin-owned report. When available, the native session receives one concise
-assistant/message. Diagnostic tools expose the latest structured result and a
-manual run path.
+The host subscribes to the native session/event bus and reacts to completed
+turns. Where available, it scopes automatic test runs to the native per-turn
+workspace-change summary; older DSH uses only successful built-in write/edit
+observations. It invokes ctx.subprocess.spawn with bounded streams and emits a
+plugin-owned report. Diagnostic tools expose the latest structured result and a
+manual full-suite run path.
 
 Self-healing, commit blocking, test generation, dashboard UI and external
 telemetry remain roadmap items.

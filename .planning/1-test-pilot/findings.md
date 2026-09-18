@@ -2,7 +2,7 @@
 
 ## Confirmed
 
-- The current Gitea branch is clean and based on origin/main; the open PR #3
+- The Gitea branch is based on origin/main; the open PR #3
   contains the runtime baseline and subsequent MVP commits.
 - The existing reference dsh-tool-tdd is zero-build ESM and exposes a
   tdd_test tool, a tdd_parse tool, parser normalization, multiple runner
@@ -54,8 +54,9 @@
 - Current native surfaces are settings.plugin.item keyed by settings namespace
   and conversation.session.header.actions. Reuse shared settings card/field
   patterns; do not add navigation.
-- Current public docs expose changes through ctx.workspaceFiles.changes; the
-  installed MiniAI source scan found neither service name.
+- Current official docs expose per-turn changes via the workspace/changes event
+  and ctx.workspaceChanges.summary(sessionId, seq); the installed MiniAI source
+  scan found neither workspaceChanges nor workspaceFiles.
 - Verify both target versions and keep the capability optional before claiming
   compatibility.
 - dsh-tool-tdd is a reference for ESM, subprocess, runner parsing and structured
@@ -68,6 +69,8 @@
 
 - https://github.com/deepseek-ai/deepseek-harness/blob/master/packages/api/README.md
 - https://github.com/deepseek-ai/deepseek-harness/blob/master/.agents/notes/implemented/architecture/2026-09-05-workspace-files-service.md
+- https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/deliverables.md
+- https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/capability-seams.md
 - https://github.com/deepseek-ai/deepseek-harness/blob/master/docs/subsystems/tools.md
 - https://github.com/deepseek-ai/deepseek-harness/tree/master/packages/client
 - https://github.com/Xiaooooo434680/dsh-tool-tdd
@@ -85,5 +88,16 @@
 - Added tests for rule precedence, detection, legacy config, unknown workspaces,
   npm/Deno output parsing. These tests were intentionally not run.
 - Current upstream API docs expose the instrumented workspace file changes feed
-  through ctx.workspaceFiles; issue #6's workspaceChanges label must be reconciled
-  against the installed and target DSH versions before implementing its adapter.
+  through ctx.workspaceChanges; it is separate from the ctx.workspaceFiles file
+  service. Issue #6 follows the current deliverables docs contract and keeps the
+  service optional for older DSH.
+
+## Issue #6 implementation
+
+- The completed-turn listener consumes the event-keyed per-turn summary when
+  available; it can process either event order and never uses repository-wide Git status.
+- All changed paths must map to supported related tests for a targeted run.
+- An unavailable/truncated/ambiguous summary or unmapped path runs the full
+  suite with a reason; no observed changes skip the automatic subprocess.
+- Tests for tracker, mapping, report scope and argv were authored but not run by
+  owner request. Static syntax and whitespace checks remain non-test checks.

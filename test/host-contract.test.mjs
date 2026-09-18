@@ -4,9 +4,14 @@ import { test } from 'node:test';
 const source = fs.readFileSync(new URL('../lib/index.js', import.meta.url), 'utf8');
 test('host uses the confirmed native event and bounded subprocess service', () => {
   assert.match(source, /ctx\.on\('session\/event'/);
+  assert.match(source, /workspace\/changes/);
+  assert.match(source, /ctx\.inject\(\['workspaceChanges'\]/);
   assert.match(source, /event\?\.type !== 'turn\/end'/);
   assert.match(source, /ctx\.subprocess/);
-  assert.match(source, /workspaceHasChanges/);
+  assert.match(source, /planChangedTests/);
+  assert.ok(source.includes("'workspace/changes'"));
+  assert.match(source, /testScope/);
+  assert.doesNotMatch(source, /workspaceHasChanges|git status/);
   assert.match(source, /return enqueueWorkspaceRun\(cwd/);
   assert.match(source, /workspaceChains/);
   assert.match(source, /test_pilot_history/);

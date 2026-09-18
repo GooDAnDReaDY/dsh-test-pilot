@@ -84,10 +84,10 @@ MVP-only sequence above:
    settings remain rooted at the current workspace; bounded safe detection
    supports pytest, package.json scripts, Go, Cargo and Deno. Unknown projects
    stay silent in automatic mode.
-2. #6: verify the installed and current public workspace-change feed API
-   (the issue says workspaceChanges; upstream docs expose
-   ctx.workspaceFiles.changes), capture per-turn writes, map source-to-test,
-   explain full-suite fallback and always run the full suite manually.
+2. #6 DONE: use the workspace/changes event and
+   ctx.workspaceChanges.summary(sessionId, event.seq), capture per-turn changes,
+   map source-to-test, explain conservative full-suite fallback and always run
+   the full suite manually. Tests are authored but deliberately unrun.
 3. #4: tools/post-execute writes, 2-second debounce/coalescing, background run,
    observe exec.signal, return only completed additionalContexts, turn/end
    failsafe and a short system-prompt nudge.
@@ -121,3 +121,4 @@ without changing/synchronizing the root.
 | Gitea Python wrapper successfully posted all eight kickoff comments, then raised NameError at the heredoc tail; a later read-only request used the wrong credential JSON shape. | Verified all eight responses were HTTP 201; did not repost. Subsequent code work does not depend on that failed read. |
 | A few read-only SSH wrappers failed on printf option parsing or nested quoting; an early grep also exceeded output limits. | Reissued targeted read-only commands with smaller output and safer quoting; no project/profile mutations resulted. |
 | Some later plan/README patch hunks used mismatched counts or context and created exact .rej files. | Inspected and removed only those generated rejects, then reapplied intended edits; no source data was lost. |
+| In-memory patch metadata/encoding was rejected before a documentation edit. | No files changed; switched to an exact-anchor-generated unified diff through the Git wrapper. |

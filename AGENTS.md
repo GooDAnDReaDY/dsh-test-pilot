@@ -6,11 +6,11 @@ DEV: /mnt/external/Project/DEV/dsh-test-pilot
 
 ## Назначение
 
-Автоматически проверять код после turn/end, выдавать structured red/green feedback и bounded self-healing.
+Автоматически проверять изменения кода, выдавать structured red/green feedback. Автоисправление явно исключено из текущего согласованного объёма.
 
 ## Статус
 
-MVP runtime and runner/parser baseline implemented; full Loader/profile and isolated-server gates remain.
+MVP runtime baseline implemented; per-turn change-aware test selection is in progress. Tests and isolated-server acceptance are deliberately deferred by owner request.
 
 ## Документация
 

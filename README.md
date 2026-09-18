@@ -37,11 +37,12 @@
 
 ## Overview
 
-AI-assisted code changes need an executable signal after the turn ends. Without
-one, a plausible response can hide a broken test suite until much later.
-Test Pilot listens to the native DSH session/event bus, detects a changed Git
-workspace, runs a configured test command through the DSH subprocess service,
-and posts a bounded result back to the session.
+AI-assisted code changes need an executable signal after the turn ends.
+Without one, a plausible response can hide a broken test suite until much later.
+Test Pilot reads DSH's per-turn file-change snapshot, selects related tests
+when every changed file can be mapped safely, and runs them through the DSH
+subprocess service. A read-only turn starts no test process. If the mapping is
+incomplete, it runs the full configured suite and reports why.
 
 The MVP is deliberately a verifier, not an autonomous repair agent. It never
 edits files, starts repair turns, commits, pushes, blocks approvals, or sends
@@ -51,29 +52,36 @@ telemetry.
 
 ~~~mermaid
 graph LR
-  A[Completed DSH turn] --> B[session/event turn/end]
-  B --> C{Workspace changed?}
-  C -- no --> D[no-tests report]
-  C -- yes --> E[Safe argv parser]
-  E --> F[ctx.subprocess.spawn]
-  F --> G[Bounded stdout/stderr]
-  G --> H[Runner parser]
-  H --> I[Normalized redacted result]
-  I --> J[Session assistant report]
-  I --> K[test-pilot/report event]
-  I --> L[Last-run diagnostic tool]
+  A[Completed DSH turn] --> B[Per-turn change events]
+  B --> C{Reliable changed files?}
+  C -- no --> D[Record no-tests; no subprocess]
+  C -- yes --> E[Related-test planner]
+  E --> F{Complete safe mapping?}
+  F -- yes --> G[Run related tests]
+  F -- no --> H[Run full suite; explain scope]
+  G --> I[Safe argv and ctx.subprocess]
+  H --> I
+  I --> J[Bounded output and runner parser]
+  J --> K[Normalized result and report]
+  K --> L[Chat, events and diagnostics]
 ~~~
 
 ## Feature breakdown
 
-- Host lifecycle: subscribes to session/event and handles completed turn/end
-  events through the Cordis lifecycle.
-- Workspace policy: uses Git porcelain status and the session workspace
-  contract. A missing Git/subprocess service fails open to a test attempt.
+- Host lifecycle: subscribes to session/event. With the core change-summary
+  service, it waits for the final workspace/changes event; on older DSH it uses
+  successful write/edit observations at turn/end.
+- Change tracking: uses the current-turn `ctx.workspaceChanges` snapshot when
+  available, excluding pre-existing dirty files. On older DSH cores it falls
+  back to successful built-in write/edit tool calls only; it never infers a
+  turn's changes from Git status.
 - Safe execution: tokenizes an executable plus arguments and rejects shell
   operators, command substitution and backticks.
 - Runner defaults: pytest, Jest, Vitest, Go, Rust/Cargo, TAP and TypeScript
   compiler commands are available. Pytest is the default.
+- Test selection: runs convention-matched tests for changed source files when
+  the mapping is complete; otherwise runs the full suite with a reason. Manual
+  `test_pilot_run` always runs the full configured command.
 - Parsers: normalized counts, duration, failure names/locations, exit status,
   timeout state, bounded output and secret-shaped redaction.
 - Background lifecycle: automatic runs are admitted once per session/turn key,
@@ -102,7 +110,9 @@ graph LR
 | lib/runner.js | DSH subprocess invocation, timeout, cancellation and stream limits |
 | lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm parsing |
 | lib/result.js | Normalization, redaction and concise rendering |
-| lib/workspace.js | Workspace and Git change detection |
+| lib/workspace.js | Session workspace and identity |
+| lib/turn-changes.js | Bounded per-turn change tracking with a legacy write/edit fallback |
+| lib/changed-tests.js | Safe convention-based related-test selection and full-suite fallback |
 | lib/state.js | Idempotency, run lifecycle and bounded result state |
 
 ## Installation
@@ -129,7 +139,6 @@ workspaceRules:
     runner: auto
     command: ""
 cwd: ""
-skipIfNoChanges: true
 timeoutMs: 120000
 maxOutputBytes: 200000
 ~~~
@@ -141,7 +150,6 @@ maxOutputBytes: 200000
 | command | string | empty | Optional executable and arguments; shell syntax is rejected |
 | workspaceRules | array | [] | Per-workspace path, enablement, runner and optional command |
 | cwd | string | empty | Explicit workspace directory; empty uses the session workspace |
-| skipIfNoChanges | boolean | true | Skip when Git reports no workspace changes |
 | timeoutMs | number | 120000 | Maximum execution time in milliseconds |
 | maxOutputBytes | number | 200000 | Per-stream collection limit |
 
@@ -152,6 +160,23 @@ supported runner is found, automatic execution stays silent. Existing flat
 `runner` and `command` settings remain a rule for the current workspace root.
 Set `runner` explicitly for an otherwise unknown framework; `command` overrides
 the detected or default command.
+
+## Automatic test selection
+
+A turn with no observed file changes is recorded as no-tests without starting a
+subprocess. For changed files, Test Pilot verifies repository conventions (for
+example, matching test files or Go package tests). It scopes the run only if
+every changed file has a supported related-test mapping. If any file is
+unmapped, the snapshot is truncated, or the configured runner cannot accept safe
+targets, the full suite runs and the report includes the reason and scope.
+Manual test_pilot_run always runs the full configured command.
+
+On DSH versions with ctx.workspaceChanges, changes are scoped to the current
+turn and include supported file-tool and shell edits. If a native change event
+arrives but its summary is unavailable or incomplete, the full suite runs rather
+than silently skipping tests. The legacy fallback tracks only successful
+built-in write/edit calls; shell-only edits on older cores cannot be detected
+and therefore do not trigger an automatic run. Upgrade DSH for full coverage.
 
 The configured command is data, not a shell script. Use an executable and
 arguments. Pipelines, redirects, command substitution and shell chaining are
@@ -189,7 +214,7 @@ There are no HTTP routes in MVP.
 - failed — non-zero exit, reported failure, or reported error.
 - timeout — the deadline was reached and the process was terminated.
 - error — execution or output was unusable.
-- no-tests — no changed workspace or an empty successful output.
+- no-tests — no reliable current-turn changes or no runnable test suite.
 
 ## Security and limits
 

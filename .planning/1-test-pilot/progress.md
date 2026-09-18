@@ -16,14 +16,22 @@
 - Implemented #7: workspace rules, safe runner detection and silent automatic
   no-run for unknown projects; updated the English, Chinese and Russian guides.
 - Added runner-detection and npm/Deno parser tests. Tests remain deliberately
-  unrun; static syntax checks and git diff --check pass.
+  unrun; the earlier static checks predate #6 and do not validate this change.
 - Verified native Session.append report bridge in a real Cordis Context: automatic
   runs append one concise assistant/message after turn/end when supported, while
   plugin-owned report events and diagnostic tools remain fallbacks.
+- Implemented #6 using the current DSH workspace/changes event and
+  ctx.workspaceChanges.summary(sessionId, seq); missing or incomplete summaries
+  force the full suite. Older-core fallback is limited to successful built-in
+  write/edit calls.
+- Authored #6 tests for event summaries, fallback, mapping, report scope and argv
+  safety; test execution remains deferred by owner request.
 
 ## Next
 
-- Implement #6 next, then #4, #9, #5, #8 and #10; update docs/issues/Memory Brain and perform non-test static checks only. Keep testing, profile changes, merge, deploy and publication deferred.
+- Report #6 to Gitea after static checks, then implement #4, #9, #5, #8 and #10;
+  update docs/issues/Memory Brain. Keep tests, profile changes, merge, deploy
+  and publication deferred.
 
 ## Current blocker
 
