@@ -4,7 +4,7 @@
   "description": "Automatic bounded test runs with persistent recent results.",
   "type": "module",
   "main": "lib/index.js",
-  "exports": { ".": "./lib/index.js", "./package.json": "./package.json" },
+  "exports": { ".": "./lib/index.js", "./client": "./lib/client.js", "./package.json": "./package.json" },
   "files": ["lib/", "cordis.patch.yml", "README.md", "README.ru.md", "README.zh.md", "docs/", "LICENSE"],
   "scripts": { "test": "node --test test/*.test.mjs" },
   "keywords": ["dsh", "dsh-plugin", "deepseek-harness", "testing", "pytest", "quality-gate"],

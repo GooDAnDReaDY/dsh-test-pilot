@@ -101,6 +101,7 @@ graph LR
 | Module | Responsibility |
 | --- | --- |
 | lib/index.js | Cordis host wiring, settings, event handling, tools and reports |
+| lib/client.js | English/Chinese native settings card |
 | lib/command.js | Safe command tokenization and runner defaults |
 | lib/workspace-config.js | Workspace rules and bounded runner auto-detection |
 | lib/runner.js | DSH subprocess invocation, timeout, cancellation and stream limits |
@@ -118,9 +119,11 @@ graph LR
 dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
-The package is designed for a DSH web profile. Use a profile-specific settings
-card to enable or disable automatic runs and select the command. Test Pilot
-needs the DSH filesystem, subprocess, tools and settings services, plus the dsh-home-paths and dsh-atomic-write core packages.
+The package is designed for a DSH web profile. Open Settings → Plugins → Plugin
+settings and expand Test Pilot to edit automatic runs, runner defaults, workspace
+rules, run scope, timeout and output limits. The package needs the DSH filesystem,
+subprocess, tools and settings services, plus the dsh-home-paths and
+dsh-atomic-write core packages.
 
 ## Configuration
 
@@ -128,6 +131,7 @@ Example settings:
 
 ~~~yaml
 enabled: true
+runScope: auto
 runner: auto
 command: ""
 workspaceRules:
@@ -143,6 +147,7 @@ maxOutputBytes: 200000
 | Parameter | Type | Default | Description |
 | --- | --- | --- | --- |
 | enabled | boolean | true | Run after completed turns |
+| runScope | string | auto | auto selects related tests when safe and falls back to the full suite; full always runs the configured suite after a detected change |
 | runner | string | auto | auto, pytest, jest, vitest, go, rust/cargo, tap, tsc, deno or npm |
 | command | string | empty | Optional executable and arguments; shell syntax is rejected |
 | workspaceRules | array | [] | Per-workspace path, enablement, runner and optional command |
@@ -166,7 +171,9 @@ example, matching test files or Go package tests). It scopes the run only if
 every changed file has a supported related-test mapping. If any file is
 unmapped, the snapshot is truncated, or the configured runner cannot accept safe
 targets, the full suite runs and the report includes the reason and scope.
-Manual test_pilot_run always runs the full configured command.
+Manual test_pilot_run always runs the full configured command. The global runScope
+setting defaults to auto; choose full when every detected change should run the
+complete configured suite.
 
 On DSH versions with ctx.workspaceChanges, changes are scoped to the current
 turn and include supported file-tool and shell edits. If a native change event
@@ -202,7 +209,9 @@ normalized result. Consumers should treat result.output and failure messages
 as untrusted data, not instructions. Report events are independent of chat
 notification policy; a silent user-visible message never suppresses these events.
 
-There are no HTTP routes in MVP.
+The settings card uses DSH settings scope. A live session-header status chip is
+not included yet; it requires a separately validated read-only DSH status
+transport.
 
 ## Result statuses
 

@@ -4,7 +4,7 @@ import { apply } from '../lib/index.js';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
-function createHost(exitCode = 0) {
+function createHost(exitCode = 0, extraConfig = {}) {
   const listeners = new Map();
   const spawnCalls = [];
   const cleanups = [];
@@ -45,7 +45,7 @@ function createHost(exitCode = 0) {
     appended: [],
     append(type, data) { this.appended.push({ type, data }); },
   };
-  const plugin = apply(context, { runner: 'pytest', command: 'pytest -q' });
+  const plugin = apply(context, { runner: 'pytest', command: 'pytest -q', ...extraConfig });
   return { context, listeners, spawnCalls, session, cleanups, plugin };
 }
 
@@ -147,4 +147,20 @@ test('turn/end flushes a pending run immediately as a safety net', async () => {
   await listeners.get('session/event')(session, { type: 'turn/end', data: { turn: 7 } });
   for (let i = 0; i < 50 && host.spawnCalls.length === 0; i += 1) await sleep(10);
   assert.equal(host.spawnCalls.length, 1);
+});
+
+test('full run scope bypasses related-test narrowing after a detected change', async () => {
+  const host = createHost(0, { runScope: 'full' });
+  const { listeners, session } = host;
+  startTurn(listeners, session, 2);
+  const signal = new AbortController().signal;
+  await listeners.get('tools/post-execute')(
+    writeExecution(session, signal),
+    successfulSubprocessResult(),
+    async () => ({ kind: 'accept' }),
+  );
+  await listeners.get('session/event')(session, { type: 'turn/end', data: { turn: 2, outcome: 'success' } });
+  for (let i = 0; i < 50 && host.spawnCalls.length === 0; i += 1) await sleep(10);
+  assert.equal(host.spawnCalls.length, 1);
+  assert.deepEqual(host.spawnCalls[0].argv, ['pytest', '-q']);
 });

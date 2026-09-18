@@ -89,6 +89,7 @@ graph LR
 | 模块 | 职责 |
 | --- | --- |
 | lib/index.js | Cordis host wiring、settings、事件、工具和报告 |
+| lib/client.js | 英文/中文原生设置卡片 |
 | lib/command.js | 安全命令分词和 runner 默认值 |
 | lib/workspace-config.js | 工作区规则和有界 runner 自动检测 |
 | lib/runner.js | DSH subprocess、超时、取消和流限制 |
@@ -106,13 +107,15 @@ graph LR
 dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
-此软件包面向 DSH web profile。请通过 profile 的 settings card 启用或停用
-自动运行并选择命令。Test Pilot 需要 DSH filesystem、subprocess、tools、settings 服务，以及 dsh-home-paths 和 dsh-atomic-write 核心包。
+此软件包面向 DSH web profile。打开“设置 → 插件 → 插件设置”并展开
+Test Pilot，即可编辑自动运行、运行器默认值、工作区规则、运行范围、超时和输出上限。
+Test Pilot 需要 DSH filesystem、subprocess、tools、settings 服务，以及 dsh-home-paths 和 dsh-atomic-write 核心包。
 
 ## 配置
 
 ~~~yaml
 enabled: true
+runScope: auto
 runner: auto
 command: ""
 workspaceRules:
@@ -128,6 +131,7 @@ maxOutputBytes: 200000
 | 参数 | 类型 | 默认值 | 说明 |
 | --- | --- | --- | --- |
 | enabled | boolean | true | 在已完成回合后运行 |
+| runScope | string | auto | auto 在安全时选择相关测试，否则运行完整套件；full 在每次检测到更改后运行完整套件 |
 | runner | string | auto | auto、pytest、jest、vitest、go、rust/cargo、tap、tsc、deno 或 npm |
 | command | string | 空 | 可选的可执行文件和参数；拒绝 shell 语法 |
 | workspaceRules | array | [] | 按工作区配置路径、启用状态、runner 和可选命令 |
@@ -148,6 +152,7 @@ maxOutputBytes: 200000
 Go package 测试）。只有每个变更文件都能映射到受支持的关联测试时才缩小范围。
 若有文件无法映射、变更快照被截断，或 runner 无法安全接收目标参数，则运行
 完整套件，并在报告中写明范围和原因。手动 test_pilot_run 始终运行完整套件。
+全局 runScope 默认为 auto；若每次检测到更改都应运行完整套件，请选择 full。
 
 支持 ctx.workspaceChanges 的 DSH 版本会提供当前回合的变更，包括受支持的文件
 工具和 shell 编辑。若 core 已报告文件变更，但变更摘要不可用或不完整，
@@ -176,7 +181,8 @@ Host 为兼容性发送两个名称：
 每个报告包含 source、sessionId、correlationId、格式化文本和标准化结果。
 请把 result.output 和 failure message 视为不可信数据，而不是指令。
 
-MVP 没有 HTTP routes。
+设置卡片使用 DSH settings scope。当前版本尚未提供会话标题状态芯片；
+该功能需要单独验证安全的只读 DSH 状态传输。
 
 ## 结果状态
 

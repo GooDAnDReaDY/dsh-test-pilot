@@ -97,6 +97,7 @@ graph LR
 | Модуль | Ответственность |
 | --- | --- |
 | lib/index.js | Cordis host, settings, события, tools и отчёты |
+| lib/client.js | Настройки DSH на английском/китайском |
 | lib/command.js | Безопасный tokenizer и runner defaults |
 | lib/workspace-config.js | Workspace rules и ограниченное автоопределение runner |
 | lib/runner.js | DSH subprocess, timeout, cancellation и лимиты потоков |
@@ -114,13 +115,16 @@ graph LR
 dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
-Плагин рассчитан на web profile DSH. В settings card выберите runner и команду.
-Для работы нужны сервисы DSH filesystem, subprocess, tools и settings, а также core-пакеты dsh-home-paths и dsh-atomic-write.
+Плагин рассчитан на web profile DSH. Откройте Settings → Plugins → Plugin settings
+и раскройте Test Pilot: там настраиваются автозапуск, runners, правила workspace,
+область прогона, timeout и лимит вывода. Нужны сервисы DSH filesystem, subprocess,
+tools и settings, а также core-пакеты dsh-home-paths и dsh-atomic-write.
 
 ## Конфигурация
 
 ~~~yaml
 enabled: true
+runScope: auto
 runner: auto
 command: ""
 workspaceRules:
@@ -136,6 +140,7 @@ maxOutputBytes: 200000
 | Параметр | Тип | По умолчанию | Описание |
 | --- | --- | --- | --- |
 | enabled | boolean | true | Запускать после завершённого turn |
+| runScope | string | auto | auto выбирает связанные тесты, когда это безопасно, иначе — весь набор; full всегда запускает полный набор после обнаруженного изменения |
 | runner | string | auto | auto, pytest, jest, vitest, go, rust/cargo, tap, tsc, deno или npm |
 | command | string | пусто | Необязательная команда: исполняемый файл и аргументы; shell syntax запрещён |
 | workspaceRules | array | [] | Правила рабочего пространства: путь, включение, runner и команда |
@@ -159,7 +164,9 @@ maxOutputBytes: 200000
 запуск можно только при наличии поддерживаемого соответствия для каждого изменённого
 файла. Если хотя бы один файл не сопоставлен, снимок обрезан или runner не умеет
 безопасно принимать цели, запускается полный набор, а отчёт указывает причину и
-область запуска. Ручной test_pilot_run всегда выполняет полный набор.
+область запуска. Ручной test_pilot_run всегда выполняет полный набор. runScope по
+умолчанию равен auto; выберите full, чтобы запускать все тесты после каждого
+обнаруженного изменения.
 
 Новые версии DSH с ctx.workspaceChanges сообщают изменения именно текущего хода,
 включая поддерживаемые изменения через file-tools и shell. Если core сообщил об
@@ -191,7 +198,9 @@ Host публикует оба имени для совместимости:
 Report содержит source, sessionId, correlationId, formatted text и normalized
 result. result.output и failure messages нужно считать недоверенными данными.
 
-HTTP routes в MVP отсутствуют.
+Карточка настроек использует штатный DSH settings scope. Чип статуса в заголовке
+сессии пока не входит в версию: для него отдельно проверяется безопасный
+read-only канал статуса DSH.
 
 ## Статусы
 

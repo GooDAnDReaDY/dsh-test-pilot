@@ -14,6 +14,8 @@ test('host uses the confirmed native event and bounded subprocess service', () =
   assert.match(source, /planChangedTests/);
   assert.ok(source.includes("'workspace/changes'"));
   assert.match(source, /testScope/);
+  assert.match(source, /runScope: input.runScope === 'full' ? 'full' : 'auto'/);
+  assert.match(source, /cfg.runScope === 'full'/);
   assert.doesNotMatch(source, /workspaceHasChanges|git status/);
   assert.match(source, /return enqueueWorkspaceRun\(cwd/);
   assert.match(source, /workspaceChains/);
