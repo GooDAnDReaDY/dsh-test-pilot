@@ -113,3 +113,13 @@ invokes the deferred test suite.
 - Next is the mandatory preflight, exact package candidate, isolated MiniPC
   install/smoke/UI acceptance, cleanup, and Gitea evidence. Merge, deploy and
   publication remain unauthorized.
+
+## 2026-09-19: isolated MiniPC smoke finding
+
+- Exact `0.1.0` was installed through the test harness, but the WebUI service
+  failed to load the plugin because `workspaceChanges` was not in the exported
+  Cordis injection list.
+- This was a defect in `dsh-test-pilot`, not in `dsh-lanmode` or the DSH test
+  profile. No foreign plugin or profile configuration was edited.
+- Added the missing injection declaration and a contract test; replacement
+  candidate verification is pending.

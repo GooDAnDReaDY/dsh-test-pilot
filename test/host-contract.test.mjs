@@ -8,6 +8,7 @@ test('host uses the confirmed native event and bounded subprocess service', () =
   assert.match(source, /additionalContexts/);
   assert.ok(source.includes('exec?.signal?.aborted'));
   assert.match(source, /workspace\/changes/);
+  assert.match(source, /export const inject = .*workspaceChanges/);
   assert.match(source, /ctx\.inject\(\['workspaceChanges'\]/);
   assert.match(source, /event\?\.type !== 'turn\/end'/);
   assert.match(source, /ctx\.subprocess/);

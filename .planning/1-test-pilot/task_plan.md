@@ -194,3 +194,13 @@ persistence has been added. It remains unexecuted by owner request.
 - [x] Full local suite: 82 tests passed, 0 failed.
 - [ ] Run DSH plugin preflight and package audit.
 - [ ] Pack the exact candidate and install it on the isolated MiniPC profile.
+
+### MiniPC smoke finding (2026-09-19)
+
+- [x] Exact `0.1.0` candidate was installed through `dsh-test-plugin`.
+- [x] DSH loader failure was diagnosed from the isolated service journal:
+      `workspaceChanges` was read during `apply()` without being declared in
+      the Cordis `inject` list.
+- [x] Added `workspaceChanges` to the exported injection contract and a test
+      guard for that contract.
+- [ ] Re-run full local/preflight checks, pack a replacement candidate, then
