@@ -71,15 +71,16 @@ counts, timestamps и identities упавших тестов — никогда 
 
 ## Publishing Composition
 
-Пакет проектируется как публичный @goodandready/dsh-test-pilot с первого
-коммита; код, примеры и документация не содержат внутренних адресов или
-секретов. Публикация, релиз и выбор registry-канала выполняются только по
-правилам DSH release workflow и отдельному разрешению владельца. Текущий блок
-не включает публикацию.
+Пакет проектируется как @goodandready/dsh-test-pilot с первого коммита; код,
+примеры и документация не содержат внутренних адресов или секретов. Для текущего
+релиза выбран private-маршрут: private GitHub repository + GitHub Packages,
+без npmjs. package.json фиксирует registry https://npm.pkg.github.com и
+restricted access. Gitea остаётся источником внутренней разработки, а exact
+проверенный main/tag публикуется только после обязательных тестов и
+production-приёмки.
 
 ## Visual acceptance
 
-Визуальная приёмка карточки и чипа выполняется после пользовательского цикла
-тестирования на реальной DSH composition: светлая/тёмная темы, loading,
-empty, passed, failed, running, stale и disabled состояния. Сейчас приёмка
-отложена вместе с установкой и прогоном тестов.
+Визуальная приёмка карточки выполняется на реальной DSH composition в светлой и
+тёмной темах. Live end-to-end проверка session-header chip принята как остаточное
+ограничение релиза: на изолированном MiniPC не было API key и живой agent-сессии.

@@ -211,3 +211,18 @@ persistence has been added. It remains unexecuted by owner request.
       `dsh-lanmode` and the rest of the test profile remained intact.
 - [x] Recorded the finding, fix, evidence and cleanup in Gitea and Memory Brain.
 - [ ] Merge PR #3 only after the owner's explicit approval.
+
+## Private release preparation (2026-09-20)
+
+- [x] Select private route: private GitHub repository + GitHub Packages; never npmjs.
+- [x] Configure package registry and restricted access in package.json.
+- [x] Update EN/ZH/RU README installation instructions and private-package wording.
+- [x] Add CHANGELOG.md to the shipped package allowlist.
+- [x] Run 82/82 tests and preflight (FAIL=0, 7 non-blocking warnings).
+- [x] Build and hash the exact candidate; SHA-256 is a6f8e3c9f313af9d2514a103c001bcddf035e6676267a33ff0bea70efb89f0c0.
+- [x] Install exact candidate on MiniPC, verify DSH_TEST_OK and UI Running in light/dark, then clean up.
+- [x] Accept the missing live session-header chip e2e check as an explicit owner decision.
+- [ ] Commit/push this release-preparation chunk and update Gitea evidence.
+- [ ] Owner explicitly approves merge of PR #3.
+- [ ] Authenticate the private GitHub publication channel, create/link the private repository, and publish exact checked version to GitHub Packages.
+- [ ] Install the exact registry version in production, run production smoke checks, then record the result.

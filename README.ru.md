@@ -5,7 +5,7 @@
 <h3>Ограниченный автоматический feedback тестов после правок, в том же ходе DSH</h3>
 
 <p align="center">
-  <a href="https://www.npmjs.com/package/@goodandready/dsh-test-pilot"><img src="https://img.shields.io/npm/v/@goodandready/dsh-test-pilot.svg?style=for-the-badge&color=6366f1&labelColor=1e1b4b" alt="npm version"></a>
+  <a href="https://github.com/GooDAnDReaDY/dsh-test-pilot/packages"><img src="https://img.shields.io/badge/GitHub_Packages-private-181717.svg?style=for-the-badge&labelColor=0d1117" alt="private GitHub Packages"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/GooDAnDReaDY/dsh-test-pilot.svg?style=for-the-badge&color=10b981&labelColor=064e3b" alt="license"></a>
   <a href="https://github.com/topics/dsh-plugin"><img src="https://img.shields.io/badge/DSH-Plugin-8b5cf6.svg?style=for-the-badge&labelColor=2e1065" alt="DSH Plugin"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node-20%2B-f59e0b.svg?style=for-the-badge&labelColor=451a03" alt="Node version"></a>
@@ -113,11 +113,21 @@ graph LR
 
 ## Установка
 
+Это приватный пакет GitHub Packages. Настройте npm для scope @goodandready
+с GitHub personal access token (classic) с правом чтения packages:
+
+~~~ini
+@goodandready:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
+~~~
+
+После этого установите плагин в web profile DSH:
+
 ~~~bash
 dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
-Плагин рассчитан на web profile DSH. Откройте Settings → Plugins → Plugin settings
+Пакет намеренно не публикуется в npmjs. Откройте Settings → Plugins → Plugin settings
 и раскройте Test Pilot: там настраиваются автозапуск, runners, правила workspace,
 область прогона, timeout и лимит вывода. Нужны сервисы DSH filesystem, subprocess,
 tools и settings, а также core-пакеты dsh-home-paths и dsh-atomic-write.
@@ -236,8 +246,8 @@ npm test
 npm pack --dry-run
 ~~~
 
-Перед публичной публикацией проверяется упакованный entry через DSH composition.
-Публикация в GitHub и npm требует явного согласия владельца.
+Перед приватной публикацией проверяется упакованный entry через DSH composition.
+Канал релиза — только GitHub Packages; npmjs намеренно не используется.
 
 ## Лицензия
 

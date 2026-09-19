@@ -133,3 +133,15 @@ invokes the deferred test suite.
 - MiniPC service loaded the plugin and returned `DSH_TEST_OK`; UI card and
   running component were visually checked in light and dark themes.
 - Cleanup removed the temporary plugin and artifact; the permanent test
+
+## 2026-09-20: private package release preparation
+
+- Owner selected the private route: private GitHub repository + GitHub Packages; npmjs is explicitly excluded.
+- Changed package publication metadata to https://npm.pkg.github.com with restricted access and added the release changelog to the package allowlist.
+- Updated English, Chinese and Russian README installation instructions and removed the npmjs version badge.
+- Updated docs/design/DESIGN.md to record the selected private route and the accepted live-chip limitation.
+- Re-ran the full suite: 82/82 passed; preflight: FAIL=0, 7 non-blocking warnings.
+- Exact candidate goodandready-dsh-test-pilot-0.1.0.tgz SHA-256: a6f8e3c9f313af9d2514a103c001bcddf035e6676267a33ff0bea70efb89f0c0. Package contains 21 allowlisted files and no internal planning/agent files.
+- Installed that exact candidate on the isolated MiniPC; service returned DSH_TEST_OK, plugin card showed v0.1.0 and component Running in light and dark themes. Cleanup removed the plugin and artifact; the permanent lanmode plugin was untouched.
+- GitHub CLI is not authenticated on MiniAI, so private GitHub repository creation/package publication is pending credentials. PR #3 remains draft/open and production has not been changed.
+- Live session-header chip remains intentionally unverified end-to-end because the test profile has no API key/live agent session; owner accepted this limitation.
