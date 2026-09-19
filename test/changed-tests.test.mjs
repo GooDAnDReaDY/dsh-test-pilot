@@ -127,5 +127,5 @@ test('keeps manual execution out of the selector and refuses unknown npm targeti
     fs: makeFs(['test/index.test.js']),
   });
   assert.equal(result.kind, 'full');
-  assert.match(result.reason, /cannot safely target/);
+  assert.match(result.reason, /supported related test/);
 });

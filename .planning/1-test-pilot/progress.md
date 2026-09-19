@@ -101,3 +101,15 @@ Next: commit/push and update issue #11. Do not run the DSH preflight because it
 invokes the deferred test suite.
 
 - Added focused status/state/persistence test source; test suites remain unrun.
+
+## 2026-09-19: owner-requested verification cycle
+
+- Installed peer dependencies only in the active DEV worktree; no DSH profile
+  or production state was changed.
+- Initial full run found 3 failures: two brittle assertions and one missing
+  peer environment. The assertions were corrected without changing runtime
+  behavior; `npm install` supplied the declared DSH peers.
+- Full `npm test` now passes: 82/82 tests, 0 failures.
+- Next is the mandatory preflight, exact package candidate, isolated MiniPC
+  install/smoke/UI acceptance, cleanup, and Gitea evidence. Merge, deploy and
+  publication remain unauthorized.

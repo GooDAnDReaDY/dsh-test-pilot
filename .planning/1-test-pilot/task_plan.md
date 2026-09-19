@@ -183,3 +183,14 @@ Do not run tests, merge, install, restart, deploy, or publish.
 Focused test source for session validation/binding/cache, allowlisted projection,
 stale/disabled behavior, extra query rejection, workspace isolation, and UUID
 persistence has been added. It remains unexecuted by owner request.
+
+## Owner-requested verification cycle (2026-09-19)
+
+- [x] Installed the package peer environment in the isolated development
+      worktree with `npm install --ignore-scripts --no-audit --no-fund`.
+- [x] Fixed two brittle test contracts: unknown runner fallback now checks its
+      conservative full-suite reason, and the source contract checks the exact
+      run-scope expression without an unescaped regular-expression `?`.
+- [x] Full local suite: 82 tests passed, 0 failed.
+- [ ] Run DSH plugin preflight and package audit.
+- [ ] Pack the exact candidate and install it on the isolated MiniPC profile.
