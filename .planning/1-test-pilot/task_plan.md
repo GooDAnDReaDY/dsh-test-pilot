@@ -228,4 +228,4 @@ persistence has been added. It remains unexecuted by owner request.
 - [ ] Install the exact registry version in production, run production smoke checks, then record the result.
 
 - [x] Run npm publish --dry-run against GitHub Packages; registry and restricted access were accepted without auto-correction warnings after npm pkg fix.
-- [ ] Reinstall and clean up the final exact candidate after package.json normalization; final SHA-256 is f76b61d6034d9b5e564854254cfe68ab67d32513dcdbfee49b9faef00a942dfd.
+- [x] Reinstall and clean up the final exact candidate after package.json normalization; final SHA-256 is f76b61d6034d9b5e564854254cfe68ab67d32513dcdbfee49b9faef00a942dfd.

@@ -148,3 +148,5 @@ invokes the deferred test suite.
 
 - npm publish --dry-run against https://npm.pkg.github.com completed with restricted access and no auto-correction warning after npm pkg fix.
 - The exact candidate hash changed only because npm pkg fix normalized package.json formatting and repository metadata; the final exact candidate still requires one last MiniPC install/cleanup before publication.
+
+- Final exact candidate after npm metadata normalization was installed on MiniPC with matching SHA-256 f76b61d6034d9b5e564854254cfe68ab67d32513dcdbfee49b9faef00a942dfd; DSH_TEST_OK and v0.1.0 / Running UI were rechecked in light and dark themes, then cleanup completed with no plugin errors.
