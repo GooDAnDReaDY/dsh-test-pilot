@@ -192,8 +192,8 @@ persistence has been added. It remains unexecuted by owner request.
       conservative full-suite reason, and the source contract checks the exact
       run-scope expression without an unescaped regular-expression `?`.
 - [x] Full local suite: 82 tests passed, 0 failed.
-- [ ] Run DSH plugin preflight and package audit.
-- [ ] Pack the exact candidate and install it on the isolated MiniPC profile.
+- [x] DSH plugin preflight and package audit: `FAIL=0`, 7 non-blocking WARNs.
+- [x] Packed exact `0.1.0` candidate and completed isolated MiniPC install.
 
 ### MiniPC smoke finding (2026-09-19)
 
@@ -203,4 +203,11 @@ persistence has been added. It remains unexecuted by owner request.
       the Cordis `inject` list.
 - [x] Added `workspaceChanges` to the exported injection contract and a test
       guard for that contract.
-- [ ] Re-run full local/preflight checks, pack a replacement candidate, then
+- [x] Re-ran full local/preflight checks, packed the replacement candidate and
+      reinstalled it on MiniPC; service health returned `DSH_TEST_OK`.
+- [x] Verified the plugin card/component as `Running` in the WebUI in light and
+      dark themes; restored the test profile to light theme.
+- [x] Removed the plugin and temporary artifact from MiniPC; permanent
+      `dsh-lanmode` and the rest of the test profile remained intact.
+- [x] Recorded the finding, fix, evidence and cleanup in Gitea and Memory Brain.
+- [ ] Merge PR #3 only after the owner's explicit approval.

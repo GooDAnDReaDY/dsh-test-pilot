@@ -123,3 +123,13 @@ invokes the deferred test suite.
   profile. No foreign plugin or profile configuration was edited.
 - Added the missing injection declaration and a contract test; replacement
   candidate verification is pending.
+
+## 2026-09-19: verification completed
+
+- Re-ran the full suite: 82/82 passed; preflight: `FAIL=0`, 7 non-blocking
+  warnings.
+- Exact replacement candidate SHA-256:
+  `d5dc852eb1ab8de07ee6cdcf84d4824ba40eb4e4eaf1069932400147efa65ff7`.
+- MiniPC service loaded the plugin and returned `DSH_TEST_OK`; UI card and
+  running component were visually checked in light and dark themes.
+- Cleanup removed the temporary plugin and artifact; the permanent test
