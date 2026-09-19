@@ -229,3 +229,5 @@ persistence has been added. It remains unexecuted by owner request.
 
 - [x] Run npm publish --dry-run against GitHub Packages; registry and restricted access were accepted without auto-correction warnings after npm pkg fix.
 - [x] Reinstall and clean up the final exact candidate after package.json normalization; final SHA-256 is f76b61d6034d9b5e564854254cfe68ab67d32513dcdbfee49b9faef00a942dfd.
+
+- [ ] Archive the required sanitized media/visual-verification.png showing the real release candidate in light and dark themes; live UI checks are complete, but the repository asset is not yet present.
