@@ -230,6 +230,14 @@ npm pack --dry-run
 仓库会通过 DSH composition 验证已打包的入口，然后再进行私有发布。
 发布渠道仅限 GitHub Packages；不会使用 npmjs。
 
+## 视觉验证
+
+![Test Pilot 视觉验证（已脱敏）](media/visual-verification.png)
+
+此脱敏图片记录了最终 0.1.0 候选版本在浅色和深色主题下通过验证的
+Test Pilot 设置卡片和会话状态芯片。图片不包含工作区路径、会话标识符、
+凭据或用户数据。
+
 ## 许可证
 
 MIT © [GooDAnDReaDY](https://github.com/GooDAnDReaDY)

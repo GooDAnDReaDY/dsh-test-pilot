@@ -261,6 +261,14 @@ The repository keeps the implementation in a Git worktree and validates the
 shipped package entry through DSH composition before private publication.
 The release channel is GitHub Packages only; npmjs is intentionally not used.
 
+## Visual verification
+
+![Sanitized Test Pilot visual verification](media/visual-verification.png)
+
+This sanitized artifact records the verified Test Pilot settings card and
+session status chip in light and dark themes for the final 0.1.0 candidate.
+It contains no workspace paths, session identifiers, credentials, or user data.
+
 ## License
 
 MIT © [GooDAnDReaDY](https://github.com/GooDAnDReaDY)

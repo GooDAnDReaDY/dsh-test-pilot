@@ -136,6 +136,15 @@ invokes the deferred test suite.
 
 ## 2026-09-20: private package release preparation
 
+- Added the required sanitized media/visual-verification.png artifact. It
+  records the accepted light/dark settings card and session-header chip surfaces
+  without environment data, and all three README variants now link to it.
+- Re-ran git diff --check, npm test (82/82 passed), and the restricted
+  GitHub Packages dry-run after the documentation artifact was added.
+- Remaining release gates are explicit owner approval to merge PR #3, GitHub
+  CLI/PAT authentication for the private repository and package publication,
+  then installation of the exact registry version and production smoke checks.
+
 - Owner selected the private route: private GitHub repository + GitHub Packages; npmjs is explicitly excluded.
 - Changed package publication metadata to https://npm.pkg.github.com with restricted access and added the release changelog to the package allowlist.
 - Updated English, Chinese and Russian README installation instructions and removed the npmjs version badge.
