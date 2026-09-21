@@ -5,7 +5,7 @@
 <h3>文件修改后、同一 DSH 回合内提供有界的自动测试反馈</h3>
 
 <p align="center">
-  <a href="https://github.com/GooDAnDReaDY/dsh-test-pilot/packages"><img src="https://img.shields.io/badge/GitHub_Packages-private-181717.svg?style=for-the-badge&labelColor=0d1117" alt="private GitHub Packages"></a>
+  <a href="https://www.npmjs.com/package/@goodandready/dsh-test-pilot"><img src="https://img.shields.io/npm/v/@goodandready/dsh-test-pilot?color=cb3837&label=npm&style=for-the-badge" alt="npm package"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/GooDAnDReaDY/dsh-test-pilot.svg?style=for-the-badge&color=10b981&labelColor=064e3b" alt="license"></a>
   <a href="https://github.com/topics/dsh-plugin"><img src="https://img.shields.io/badge/DSH-Plugin-8b5cf6.svg?style=for-the-badge&labelColor=2e1065" alt="DSH Plugin"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node-20%2B-f59e0b.svg?style=for-the-badge&labelColor=451a03" alt="Node version"></a>
@@ -103,21 +103,14 @@ graph LR
 
 ## 安装
 
-这是一个私有 GitHub Packages 发布包。请使用具有 package read 权限的 GitHub
-classic personal access token 为 @goodandready scope 配置 npm：
-
-~~~ini
-@goodandready:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
-~~~
-
-然后将插件安装到 DSH web profile：
+本插件已发布到 npmjs，不需要私有 registry 或额外凭据。将插件安装到 DSH
+web profile：
 
 ~~~bash
 dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
-本插件不会发布到 npmjs。打开“设置 → 插件 → 插件设置”并展开 Test Pilot，
+打开“设置 → 插件 → 插件设置”并展开 Test Pilot，
 即可编辑自动运行、runner 默认值、workspace 规则、运行范围、超时和输出上限。
 Test Pilot 需要 DSH filesystem、subprocess、tools、settings 服务，以及 dsh-home-paths 和 dsh-atomic-write 核心包。
 
@@ -227,8 +220,7 @@ npm test
 npm pack --dry-run
 ~~~
 
-仓库会通过 DSH composition 验证已打包的入口，然后再进行私有发布。
-发布渠道仅限 GitHub Packages；不会使用 npmjs。
+仓库会通过 DSH composition 验证已打包的入口，然后再公开发布到 npmjs。
 
 ## 视觉验证
 

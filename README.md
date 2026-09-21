@@ -5,7 +5,7 @@
 <h3>Bounded automatic test feedback after file changes, inside the same DSH turn</h3>
 
 <p align="center">
-  <a href="https://github.com/GooDAnDReaDY/dsh-test-pilot/packages"><img src="https://img.shields.io/badge/GitHub_Packages-private-181717.svg?style=for-the-badge&labelColor=0d1117" alt="private GitHub Packages"></a>
+  <a href="https://www.npmjs.com/package/@goodandready/dsh-test-pilot"><img src="https://img.shields.io/npm/v/@goodandready/dsh-test-pilot?color=cb3837&label=npm&style=for-the-badge" alt="npm package"></a>
   <a href="LICENSE"><img src="https://img.shields.io/github/license/GooDAnDReaDY/dsh-test-pilot.svg?style=for-the-badge&color=10b981&labelColor=064e3b" alt="license"></a>
   <a href="https://github.com/topics/dsh-plugin"><img src="https://img.shields.io/badge/DSH-Plugin-8b5cf6.svg?style=for-the-badge&labelColor=2e1065" alt="DSH Plugin"></a>
   <a href="https://nodejs.org"><img src="https://img.shields.io/badge/Node-20%2B-f59e0b.svg?style=for-the-badge&labelColor=451a03" alt="Node version"></a>
@@ -116,21 +116,14 @@ graph LR
 
 ## Installation
 
-This is a private GitHub Packages release. Configure npm for the @goodandready
-scope with a GitHub personal access token (classic) that has package read access:
-
-~~~ini
-@goodandready:registry=https://npm.pkg.github.com
-//npm.pkg.github.com/:_authToken=${GITHUB_PACKAGES_TOKEN}
-~~~
-
-Then install it into the DSH web profile:
+The package is published on npmjs and does not require a private registry or
+additional credentials. Install it into the DSH web profile:
 
 ~~~bash
 dsh plugin --profile web add @goodandready/dsh-test-pilot
 ~~~
 
-The package is intentionally not published to npmjs. Open Settings → Plugins →
+Open Settings → Plugins →
 Plugin settings and expand Test Pilot to edit automatic runs, runner defaults,
 workspace rules, run scope, timeout and output limits. The package needs the DSH
 filesystem, subprocess, tools and settings services, plus the dsh-home-paths and
@@ -258,8 +251,7 @@ npm pack --dry-run
 ~~~
 
 The repository keeps the implementation in a Git worktree and validates the
-shipped package entry through DSH composition before private publication.
-The release channel is GitHub Packages only; npmjs is intentionally not used.
+shipped package entry through DSH composition before public publication on npmjs.
 
 ## Visual verification
 

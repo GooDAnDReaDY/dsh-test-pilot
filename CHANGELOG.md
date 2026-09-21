@@ -2,7 +2,7 @@
 
 ## 0.1.0
 
-Initial private release candidate for DSH Test Pilot.
+Initial public release candidate for DSH Test Pilot.
 
 - Runs bounded automatic tests after successful file changes, with a quiet-period debounce and turn-end safety flush.
 - Selects related tests when the workspace mapping is complete and falls back to the configured full suite when it is not.
@@ -12,4 +12,4 @@ Initial private release candidate for DSH Test Pilot.
 - Provides English and Chinese settings UI plus a session status chip.
 - Does not perform self-healing, Git mutation, approval blocking, test generation or telemetry.
 
-This package is distributed privately through GitHub Packages and is not published to npmjs.
+This package is distributed publicly through npmjs.

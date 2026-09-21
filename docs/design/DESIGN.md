@@ -73,9 +73,9 @@ counts, timestamps и identities упавших тестов — никогда 
 
 Пакет проектируется как @goodandready/dsh-test-pilot с первого коммита; код,
 примеры и документация не содержат внутренних адресов или секретов. Для текущего
-релиза выбран private-маршрут: private GitHub repository + GitHub Packages,
-без npmjs. package.json фиксирует registry https://npm.pkg.github.com и
-restricted access. Gitea остаётся источником внутренней разработки, а exact
+релиза выбран public-маршрут: public GitHub repository + npmjs.
+package.json фиксирует registry https://registry.npmjs.org и
+public access. Gitea остаётся источником разработки, а exact
 проверенный main/tag публикуется только после обязательных тестов и
 production-приёмки.
 
