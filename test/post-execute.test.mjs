@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { apply } from '../lib/index.js';
+import { apply, name } from '../lib/index.js';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
@@ -67,6 +67,13 @@ function successfulSubprocessResult() {
   return { isError: false, value: { path: '/repo/src/app.py' }, content: [] };
 }
 
+function assertV4DurableMessage(event) {
+  assert.equal(event.type, 'user/message');
+  const source = event.data?.source;
+  assert.ok(source && typeof source.kind === 'string' && source.kind.length > 0);
+  assert.notEqual(source.kind, 'plugin');
+}
+
 test('debounces writes and returns a fresh completed result in additionalContexts', async () => {
   const host = createHost();
   const { listeners, session } = host;
@@ -97,6 +104,11 @@ test('debounces writes and returns a fresh completed result in additionalContext
   assert.match(next.additionalContexts[0].id, /^[0-9a-f-]{36}$/i);
   assert.equal(next.additionalContexts[0].role, 'user');
   assert.match(next.additionalContexts[0].content[0].text, /test-pilot/);
+  const delivered = next.additionalContexts[0];
+  assert.equal(delivered.source.kind, 'plugin:' + name);
+  assert.equal(delivered.source.plugin, undefined);
+  assert.equal(delivered.source.form, 'notice');
+  assertV4DurableMessage({ type: 'user/message', data: delivered });
   await listeners.get('session/event')(session, { type: 'turn/end', data: { turn: 1, outcome: 'success' } });
   assert.equal(session.appended.length, 0, 'a green result is delivered to the agent but never appended to chat');
 });
