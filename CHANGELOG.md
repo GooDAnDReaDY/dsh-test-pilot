@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.1
+
+### Fixed
+- Settings no longer wait on the removed settingsScope service. The client uses configForms (#15).
+
 ## 0.1.0
 
 Initial public release candidate for DSH Test Pilot.
