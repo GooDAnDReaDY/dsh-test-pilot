@@ -10,7 +10,7 @@ test('client bundle is declared and the settings card uses its exact namespace k
   assert.equal(pkg.dsh.client.platform, 'web')
   assert.ok(source.includes("id: '@goodandready/dsh-test-pilot'"))
   assert.ok(source.includes("name: 'settings.plugin.item', key: NS, locale: NS"))
-  assert.ok(source.includes('ctx.settingsScope.bind({ namespace: NS })'))
+  assert.ok(source.includes('ctx.configForms.get(NS)'))
 })
 
 test('client registers equivalent English and Chinese UI dictionaries only', () => {
