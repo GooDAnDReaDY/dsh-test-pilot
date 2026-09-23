@@ -69,8 +69,8 @@ graph LR
   TypeScript 编译器命令；默认使用 pytest。
 - 测试选择：所有变更源文件都有可靠的关联测试时只跑关联测试；否则运行完整套件
   并说明原因。手动 test_pilot_run 始终运行完整配置命令。
-- 解析器：统一统计、耗时、失败名称/位置、退出状态、超时状态、有界输出和
-  类 secret 文本脱敏。
+- 解析器：支持 Node.js 内置测试运行器摘要，并统一统计、耗时、失败名称/位置、
+  退出状态、超时状态、有界输出和类 secret 文本脱敏。
 - 后台生命周期：后续写入会重置计时并取消过期运行。处理器不会等待测试，
   会观察 exec.signal，并且只通过 additionalContexts 返回已完成结果。
 - 每个工作区的自动和手动运行都会串行化，不会同时检查同一个可变目录。
@@ -93,7 +93,7 @@ graph LR
 | lib/command.js | 安全命令分词和 runner 默认值 |
 | lib/workspace-config.js | 工作区规则和有界 runner 自动检测 |
 | lib/runner.js | DSH subprocess、超时、取消和流限制 |
-| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm 解析 |
+| lib/parser.js | Node.js 内置/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm 解析 |
 | lib/result.js | 标准化、脱敏和简洁渲染 |
 | lib/workspace.js | Session 工作区和身份信息 |
 | lib/turn-changes.js | 有界的回合变更跟踪及旧版 write/edit 回退 |

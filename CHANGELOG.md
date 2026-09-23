@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.1.2
+
+### Fixed
+- Format automatic test results as producer-owned message sources for DSH format v4 (#17).
+
 ## 0.1.1
 
 ### Fixed

@@ -75,8 +75,8 @@ graph LR
 - Test selection: runs convention-matched tests for changed source files when
   the mapping is complete; otherwise runs the full suite with a reason. Manual
   `test_pilot_run` always runs the full configured command.
-- Parsers: normalized counts, duration, failure names/locations, exit status,
-  timeout state, bounded output and secret-shaped redaction.
+- Parsers: built-in Node.js test runner summaries; normalized counts, duration,
+  failure names/locations, exit status, timeout state and secret-shaped redaction.
 - Background lifecycle: later writes reset the debounce and cancel a stale
   run. The post-execute listener never waits for tests, observes exec.signal,
   and returns only an already-completed result in additionalContexts.
@@ -106,7 +106,7 @@ graph LR
 | lib/command.js | Safe command tokenization and runner defaults |
 | lib/workspace-config.js | Workspace rules and bounded runner auto-detection |
 | lib/runner.js | DSH subprocess invocation, timeout, cancellation and stream limits |
-| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm parsing |
+| lib/parser.js | Node.js built-in/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm parsing |
 | lib/result.js | Normalization, redaction and concise rendering |
 | lib/workspace.js | Session workspace and identity |
 | lib/turn-changes.js | Bounded per-turn change tracking with a legacy write/edit fallback |
@@ -257,8 +257,8 @@ shipped package entry through DSH composition before public publication on npmjs
 
 ![Sanitized Test Pilot visual verification](media/visual-verification.png)
 
-This sanitized artifact records the verified Test Pilot settings card and
-session status chip in light and dark themes for the final 0.1.0 candidate.
+This sanitized artifact shows the installed Test Pilot v0.1.2 card reporting
+Running in the isolated DSH test profile, captured in both light and dark themes.
 It contains no workspace paths, session identifiers, credentials, or user data.
 
 ## License

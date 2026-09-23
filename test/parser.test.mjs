@@ -86,3 +86,25 @@ test('parses Deno summary counts', () => {
   assert.equal(result.status, 'passed');
   assert.equal(result.counts.passed, 2);
 });
+test('parses the built-in Node.js test runner summary', () => {
+  const output = [
+    'ℹ tests 220',
+    'ℹ pass 210',
+    'ℹ fail 2',
+    'ℹ cancelled 1',
+    'ℹ skipped 3',
+    'ℹ todo 4',
+    'ℹ duration_ms 3091.77',
+  ].join('\n');
+  const result = parseTestOutput({ runner: 'npm', output, exitCode: 1 });
+  assert.equal(result.status, 'failed');
+  assert.deepEqual(result.counts, {
+    total: 220, passed: 210, failed: 2, skipped: 7, errors: 1, xfailed: 0, xpassed: 0,
+  });
+  assert.equal(result.durationMs, 3091.77);
+});
+test('Node.js summary failures remain red even when the process exit code is zero', () => {
+  const result = parseTestOutput({ runner: 'npm', output: 'ℹ tests 2\nℹ pass 1\nℹ fail 1\nℹ duration_ms 4', exitCode: 0 });
+  assert.equal(result.status, 'failed');
+  assert.equal(result.counts.failed, 1);
+});
