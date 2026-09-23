@@ -109,7 +109,7 @@ test('status handler rejects caller-supplied workspace parameters before resolvi
     getConfig: () => ({ enabled: false }),
   });
   const response = await handler(new Request(
-    'http://dsh.local/api/dsh-test-pilot/status?sessionId=visible-session&cwd=%2Fetc%2Fpasswd',
+    'http://example.invalid/api/dsh-test-pilot/status?sessionId=visible-session&cwd=%2Fetc%2Fpasswd',
   ));
 
   assert.equal(response.status, 400);
@@ -148,7 +148,7 @@ test('status response is workspace-bound, no-store, and excludes run internals',
     now: () => NOW,
   });
   const response = await handler(new Request(
-    'http://dsh.local/api/dsh-test-pilot/status?sessionId=visible-session',
+    'http://example.invalid/api/dsh-test-pilot/status?sessionId=visible-session',
   ));
   const body = await response.json();
 
