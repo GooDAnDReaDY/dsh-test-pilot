@@ -54,7 +54,9 @@ the plugin must not edit files, commit, push, or block approval.
 - Existing Gitea evidence covers earlier composition, API and settings-card
   checks, including light/dark card appearance. The 0.1.2 candidate's live
   session-header chip has not been E2E tested because MiniPC has no test API key.
-  Production credentials must not be copied to close this gap.
+  On 2026-09-23 the owner accepted this as an unverified release limitation;
+  production credentials must not be copied to close this gap. This acceptance
+  is not merge or publication approval.
 - Preflight warnings were manually reviewed; packaged file list and common-secret scan are clean. Remaining: commit/push,
   one PR, explicit owner approval before merge, publish public 0.1.2, install
   the exact registry artifact in production and verify it, update the public

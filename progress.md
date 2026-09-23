@@ -26,4 +26,9 @@
 - Exact 0.1.2 candidate was installed and loaded on MiniPC, then the plugin and archive were removed; service is active and the three pre-existing plugins remain unchanged.
 - Protected status route rejected requests without a session, including caller-provided workspace input.
 - Earlier Gitea acceptance proves settings card in light/dark themes and host composition. Live model/session and header-chip E2E remain unverified because the isolated profile has no API key. Do not copy production credentials.
+
+## 2026-09-23 — accepted live-E2E limitation
+- Owner accepted release with the live model/session and session-header-chip E2E unverified because isolated MiniPC has no test API key.
+- No production credential was copied or requested. The live E2E remains untested; this decision is not approval to merge or publish.
+- PR #21 remains WIP and awaits a separate explicit owner merge decision.
 - Remaining: final artifact/security review, commit/push, one PR, owner merge approval, publish 0.1.2, exact-registry production acceptance, public showcase update, then evidence-based closure of all 12 issues.

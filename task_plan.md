@@ -4,8 +4,9 @@
 Complete all 12 open Gitea issues in one branch/PR, preserve the agreed no-self-healing scope, pass release gates, and publish 0.1.2.
 
 ## Next Step
-Finish public-package review and release checks, then commit/push one PR. Do not claim
-the session-header live E2E gate complete without a test-only API key.
+Request explicit owner approval to merge PR #21. The owner accepted live session/header-chip
+E2E as an unverified release limitation; do not describe it as tested or treat that
+acceptance as merge or publication approval.
 
 ## Current Phase
 Phase 4 — final verification
@@ -35,8 +36,8 @@ Phase 4 — final verification
 - [x] README trio synchronized; versioned release plan recorded
 - [x] npm test 84/84; preflight FAIL=0/WARN=7; package contents reviewed
 - [x] Exact candidate installed then removed from isolated MiniPC; service active and pre-existing plugins preserved
-- [ ] Supply a test-only DSH API key or explicitly accept missing live-session/session-chip E2E evidence
-- **Status:** blocked only on live session acceptance input; local/package checks complete
+- [x] Owner accepted missing live-session/session-chip E2E evidence as a release limitation (2026-09-23); no test key supplied and no production credentials copied
+- **Status:** limitation accepted; live E2E remains unverified; local/package checks complete
 
 ### Phase 5: PR and release
 - [ ] One PR, request explicit merge approval
@@ -62,4 +63,4 @@ Phase 4 — final verification
 | JS isolate lacked btoa/TextEncoder | 2 | Use manual in-memory UTF-8 encoder |
 
 ## Current status
-Node.js parser (#13) and npm image inclusion (#20) are implemented; 84/84 unit tests pass. Exact candidate was installed on MiniPC, component load and auth guard checked, then candidate/package removed. Service remains active and original plugins unchanged. Live session/header-chip E2E is untested because no test API key exists; do not copy production credentials. Commit/PR, approval, publication, production verification, and issue closure remain.
+Node.js parser (#13) and npm image inclusion (#20) are implemented; 84/84 unit tests pass. Exact candidate was installed on MiniPC, component load and auth guard checked, then candidate/package removed. Service remains active and original plugins unchanged. Owner accepted that live session/header-chip E2E remains unverified because no test API key exists; do not copy production credentials. PR #21 awaits explicit merge approval. Publication, production verification, showcase update, and issue closure remain.
