@@ -257,8 +257,8 @@ shipped package entry through DSH composition before public publication on npmjs
 
 ![Sanitized Test Pilot visual verification](media/visual-verification.png)
 
-This sanitized artifact records the verified Test Pilot settings card and
-session status chip in light and dark themes for the final 0.1.0 candidate.
+This sanitized artifact shows the installed Test Pilot v0.1.2 card reporting
+Running in the isolated DSH test profile, captured in both light and dark themes.
 It contains no workspace paths, session identifiers, credentials, or user data.
 
 ## License
