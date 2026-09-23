@@ -74,8 +74,8 @@ graph LR
 - Выбор тестов: связанные тесты запускаются только при полном соответствии всех
   изменённых файлов; иначе запускается весь набор с объяснением причины.
   Ручной test_pilot_run всегда запускает полную настроенную команду.
-- Parser: counts, duration, failure names/locations, exit status, timeout,
-  bounded output и redaction значений, похожих на секреты.
+- Parser: summaries встроенного Node.js test runner, counts, duration, failure
+  names/locations, exit status, timeout, bounded output и redaction секретов.
 - Фоновый lifecycle: новая запись сбрасывает таймер и отменяет устаревший
   прогон. Обработчик не ждёт тесты, учитывает exec.signal и прикладывает к
   additionalContexts только уже готовый результат, не повторяя его в этом ходе.
@@ -103,7 +103,7 @@ graph LR
 | lib/command.js | Безопасный tokenizer и runner defaults |
 | lib/workspace-config.js | Workspace rules и ограниченное автоопределение runner |
 | lib/runner.js | DSH subprocess, timeout, cancellation и лимиты потоков |
-| lib/parser.js | Pytest/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm parser |
+| lib/parser.js | Node.js built-in/Jest/Vitest/Go/Rust/TAP/tsc/Deno/npm parser |
 | lib/result.js | Нормализация, redaction и краткий отчёт |
 | lib/workspace.js | Workspace сессии и её идентификатор |
 | lib/turn-changes.js | Ограниченное отслеживание изменений хода и fallback write/edit |
