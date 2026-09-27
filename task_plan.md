@@ -4,10 +4,10 @@
 Complete the ten assigned open issues in one Gitea branch/worktree/PR, preserve the no-self-healing boundary, and prepare the already selected 0.1.2 release only after all gates and approvals.
 
 ## Next Step
-Review the exact public GitHub tree and verify source-sanitization options against Git documentation; finalize issue mapping before code changes.
+Run clean-install/preflight/package audit, then commit remaining slices, post issue evidence and open one PR. MiniPC acceptance follows merge.
 
 ## Current Phase
-Phase 1 — preflight and research
+Phase 3 — implementation and verification
 
 ## Previous block phases (#1, #4–#11, #13, #19, #20)
 ### Phase 1: Requirements and discovery
@@ -65,22 +65,22 @@ Previous 0.1.2 backlog implementation and MiniPC candidate acceptance were recor
 
 ## Active block: issues #8, #24–#32
 
-- [ ] Confirm exact issue state and public mirror tree; finalize public-source allowlist.
-- [ ] Implement all ten issues in this worktree; add focused regression tests.
+- [x] Confirm issue state and inspect the public mirror baseline; #24 allowlist/filter implementation remains.
+- [x] Implement issue changes and focused regression tests in this worktree; #24 actual sanitized public-tree/tag update remains approval-gated.
 - [ ] Run clean-install/full-suite/preflight/package audit and required isolated-server acceptance.
 - [ ] Commit completed slices, push one branch, open one PR, report evidence on each issue.
 - [ ] Await merge approval; proceed through release gates and close issues only with evidence.
 
 ### Issue checklist
-- [ ] #8 — current ConfigForms settings registration and contract tests.
-- [ ] #24 — reproducible sanitized public tree; preserve internal Gitea docs and OpenWiki.
-- [ ] #25 — clean install succeeds with startup-import dependencies declared correctly.
-- [ ] #26 — persistence tests use injected temporary state and never touch default DSH home.
-- [ ] #27 — runner paths are workspace-bounded and network fetch is not implicit.
-- [ ] #28 — output is truncated at valid UTF-8 byte boundaries.
-- [ ] #29 — locale identity/fallback preserves externally provided locales.
-- [ ] #30 — theme-token/shared UI styling and light/dark visual verification.
-- [ ] #31 — cohesive host-module extraction with behavior preserved.
-- [ ] #32 — ConnectionFetchRoute registration matches the installed type contract.
+- [x] #8 — migrate to live ConfigForms settings policy and update contract tests; MiniPC verification pending.
+- [ ] #24 — explicit sanitized GitHub source allowlist is documented; public tree must omit package-lock.json and internal files, verified at publication gate.
+- [x] #25 — declare required startup peers and verify current clean install; MiniPC compatibility matrix still pending.
+- [x] #26 — persistence tests use isolated temporary state-file paths; suite passes.
+- [x] #27 — validate manual paths through DSH filesystem containment; npm defaults are offline with per-workspace explicit fetch opt-in; tests pass.
+- [x] #28 — UTF-8-safe bounded output suffix; implementation committed as 0ad1144.
+- [x] #29 — preserve locale identity and consult slot translator before built-in fallback; runtime verification pending.
+- [x] #30 — use DSH DisclosureRow and elevation token; automated contract test passes. Light/dark visual acceptance pending.
+- [x] #31 — extract cohesive host-event and agent-tool modules with focused behavior-contract tests; runtime acceptance pending.
+- [x] #32 — explicitly declare requestBody:none and assert the route contract; installed-runtime acceptance pending.
 
-**Status:** preflight underway; no product changes yet.
+**Status:** implementation underway; 97/97 tests pass. Re-run clean install/preflight/package audit after final changes (last preflight: FAIL=0/WARN=6); MiniPC runtime/visual acceptance remains.

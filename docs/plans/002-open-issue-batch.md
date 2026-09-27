@@ -6,22 +6,22 @@ Complete the ten assigned open issues in one Gitea branch, worktree and PR, pres
 ## Issue-level scope and acceptance
 
 ### #8 — current DSH settings contract
-- Replace stale settings registration with the current ConfigForms registration/disposal contract.
+- Keep the DSH ConfigForms profile-entry identity aligned and configure native settings policy with the current settings.configure API; verify host lifecycle and live settings on MiniPC.
 - Keep the existing client card and settings snapshot behavior.
 - Add host-contract tests for registration, update, unavailable/read-only state and disposal/HMR; no silent catch may hide a missing card.
 
 ### #24 — public source-tree hygiene
-- Define a reproducible public-source allowlist and classify every tracked path.
-- Keep docs, AGENTS.md, planning/research artifacts and openwiki in Gitea; exclude internal-only material from public GitHub and npm artifacts.
-- Do not rewrite public history or force-push. Public mirror writes stay behind the release approval gate.
-- Verify the resulting public tree and npm pack contents against the allowlist.
+- Public GitHub allowlist: `CHANGELOG.md`, `LICENSE`, `README.md`, `README.ru.md`, `README.zh.md`, `cordis.patch.yml`, `lib/**`, `media/**`, `package.json`, and `test/**`.
+- Explicitly exclude `package-lock.json`, `.gitignore`, `AGENTS.md`, `index.md`, `findings.md`, `progress.md`, `task_plan.md`, `.planning/**`, `docs/plans/**`, `openwiki/**`, and all generated/development-only files. Keep them in Gitea where tracked.
+- The package uses its own `package.json.files` allowlist; npm dry-run confirms README trio is present and AGENTS/index/plans/lockfile are absent.
+- Do not rewrite prior public history or force-push. The existing public tree still has the historical lockfile; remove it from the next approved sanitized tree and verify exact tag tree. No GitHub writes before final release approval.
 
 ### #25 — clean-install dependency contract
 - Ensure modules imported at startup are installable from a clean consumer install.
 - Test npm ci followed by the full suite; verify the declared dependency contract rather than relying on preinstalled server packages.
 
 ### #26 — persistence test isolation
-- Inject a temporary state path and required clock/service dependency in tests.
+- Pass an explicit temporary persistence file path through the test seam; assert persistence tests never touch the default DSH home and remove only test-created temp paths.
 - Prove tests never write to the operator's default DSH home; clean only test-owned temporary state.
 
 ### #27 — runner workspace and egress boundary
@@ -37,7 +37,7 @@ Complete the ten assigned open issues in one Gitea branch, worktree and PR, pres
 - Keep built-in locales English and Chinese only; test dictionary selection and fallback.
 
 ### #30 — native UI styling
-- Replace hard-coded shadow/color and private glyph styling with DSH theme tokens/shared primitives.
+- Use the shared DisclosureRow component and theme-owned elevation token; remove custom glyph/hand-authored shadow.
 - Preserve keyboard access, visible focus and reduced motion; visually verify light and dark themes on the isolated DSH test profile.
 
 ### #31 — host module size
@@ -45,14 +45,14 @@ Complete the ten assigned open issues in one Gitea branch, worktree and PR, pres
 - Keep boundaries minimal; verify imports/contracts and remove the size warning or document why splitting further is harmful.
 
 ### #32 — ConnectionFetchRoute contract
-- Supply the required route fields for the installed DSH Connection type and add a contract/type check.
+- Declare the GET route requestBody as none and add a source contract assertion; verify compatibility against the installed MiniPC DSH runtime because its older local route type does not expose this field.
 - Preserve authenticated GET behavior and safe invalid-request responses.
 
 ## Phases
 
-1. **Preflight and research** — confirm issue state, review current code/docs and DSH contracts, inspect the public mirror and reuse-first references. Record findings before implementation. **Status: in progress.**
-2. **Implementation** — implement #8, #24–#32 on this branch; add issue-specific regression tests and update English/Chinese docs where user behavior or settings change.
-3. **Verification** — run focused tests, clean-install npm ci plus full suite, plugin preflight, public allowlist/package audit, and isolated MiniPC candidate/UI acceptance as required. Do not claim an unverified check passed.
+1. **Preflight and research** — confirm issue state, review current code/docs and DSH contracts, inspect the public mirror and reuse-first references. Record findings before implementation. **Status: complete.**
+2. **Implementation** — implement #8, #24–#32 on this branch; add issue-specific regression tests and update English/Chinese docs where user behavior or settings change. **Status: in progress; #24 publication-tree verification remains gated on the approved sanitized publication, while #31 implementation is complete.**
+3. **Verification** — full suite is 97/97; clean-install npm ci and plugin preflight pass (FAIL=0/WARN=6). Still run MiniPC candidate/runtime/UI acceptance and verify the exact sanitized GitHub tag tree after publication approval. Do not claim an unverified check passed.
 4. **Gitea handoff** — self-review, commit completed slices, push via the Codex Git wrapper, open one PR, record evidence in each issue, and await explicit owner merge approval.
 5. **Release** — keep version 0.1.2; after merge and required test-server/production checks, obtain final public release approval before any public GitHub/tag/npm write. Do not close issues until acceptance and per-issue evidence are complete.
 
