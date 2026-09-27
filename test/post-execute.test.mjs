@@ -6,16 +6,19 @@ import path from 'node:path';
 import { apply, name } from '../lib/index.js';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
-const testStateDirs = new Set();
+const testHosts = new Set();
 
 afterEach(async () => {
-  await Promise.all([...testStateDirs].map((dir) => rm(dir, { recursive: true, force: true })));
-  testStateDirs.clear();
+  for (const host of testHosts) {
+    for (const cleanup of [...host.cleanups].reverse()) await cleanup();
+    await rm(host.stateDir, { recursive: true, force: true });
+  }
+  testHosts.clear();
 });
 
 async function createHost(exitCode = 0, extraConfig = {}) {
   const stateDir = await mkdtemp(path.join(os.tmpdir(), 'dsh-test-pilot-test-'));
-  testStateDirs.add(stateDir);
+
   const persistenceFilePath = path.join(stateDir, 'state.json');
   const listeners = new Map();
   const spawnCalls = [];
@@ -58,7 +61,9 @@ async function createHost(exitCode = 0, extraConfig = {}) {
     append(type, data) { this.appended.push({ type, data }); },
   };
   const plugin = apply(context, { runner: 'pytest', command: 'pytest -q', ...extraConfig }, { persistenceFilePath });
-  return { context, listeners, spawnCalls, session, cleanups, plugin, persistenceFilePath };
+  const host = { context, listeners, spawnCalls, session, cleanups, plugin, persistenceFilePath, stateDir };
+  testHosts.add(host);
+  return host;
 }
 
 function startTurn(listeners, session, turn = 1) {
