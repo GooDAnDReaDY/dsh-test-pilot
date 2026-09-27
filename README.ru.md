@@ -137,6 +137,7 @@ workspaceRules:
     enabled: true
     runner: auto
     command: ""
+    allowNetworkFetch: false
 cwd: ""
 timeoutMs: 120000
 maxOutputBytes: 200000
@@ -148,7 +149,7 @@ maxOutputBytes: 200000
 | runScope | string | auto | auto выбирает связанные тесты, когда это безопасно, иначе — весь набор; full всегда запускает полный набор после обнаруженного изменения |
 | runner | string | auto | auto, pytest, jest, vitest, go, rust/cargo, tap, tsc, deno или npm |
 | command | string | пусто | Необязательная команда: исполняемый файл и аргументы; shell syntax запрещён |
-| workspaceRules | array | [] | Правила рабочего пространства: путь, включение, runner и команда |
+| workspaceRules | array | [] | Правило workspace: путь, включение, runner, команда и разрешение скачивания пакетов |
 | cwd | string | пусто | Явная workspace-директория; пусто использует workspace сессии |
 | timeoutMs | number | 120000 | Максимальное время выполнения в миллисекундах |
 | maxOutputBytes | number | 200000 | Лимит сбора каждого output stream |
@@ -159,7 +160,10 @@ maxOutputBytes: 200000
 не найден, автоматический запуск и сообщение пропускаются. Старые верхнеуровневые
 `runner` и `command` остаются правилом для корня текущего workspace.
 Для неизвестного фреймворка задайте `runner` явно; `command` переопределяет
-найденную или стандартную команду.
+найденную или стандартную команду. Встроенные npm-команды по умолчанию работают offline.
+В правиле workspace можно включить `allowNetworkFetch: true`: недостающие пакеты будут
+загружаться только с фиксированного `https://registry.npmjs.org`. По умолчанию опция
+выключена и не меняет пользовательские команды.
 
 ## Выбор тестов для автозапуска
 

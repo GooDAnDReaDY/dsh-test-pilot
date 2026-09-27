@@ -143,6 +143,7 @@ workspaceRules:
     enabled: true
     runner: auto
     command: ""
+    allowNetworkFetch: false
 cwd: ""
 timeoutMs: 120000
 maxOutputBytes: 200000
@@ -154,7 +155,7 @@ maxOutputBytes: 200000
 | runScope | string | auto | auto selects related tests when safe and falls back to the full suite; full always runs the configured suite after a detected change |
 | runner | string | auto | auto, pytest, jest, vitest, go, rust/cargo, tap, tsc, deno or npm |
 | command | string | empty | Optional executable and arguments; shell syntax is rejected |
-| workspaceRules | array | [] | Per-workspace path, enablement, runner and optional command |
+| workspaceRules | array | [] | Per-workspace path, enablement, runner, optional command and package-fetch policy |
 | cwd | string | empty | Explicit workspace directory; empty uses the session workspace |
 | timeoutMs | number | 120000 | Maximum execution time in milliseconds |
 | maxOutputBytes | number | 200000 | Per-stream collection limit |
@@ -165,7 +166,9 @@ Test Pilot checks `pytest.ini`, pytest configuration in `pyproject.toml`, a
 supported runner is found, automatic execution stays silent. Existing flat
 `runner` and `command` settings remain a rule for the current workspace root.
 Set `runner` explicitly for an otherwise unknown framework; `command` overrides
-the detected or default command.
+the detected or default command. Built-in npm-based defaults run offline. A workspace rule may set
+`allowNetworkFetch: true` to fetch missing packages from the fixed `https://registry.npmjs.org` registry;
+this is off by default and does not change custom commands.
 
 ## Automatic test selection
 

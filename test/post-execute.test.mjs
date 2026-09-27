@@ -1,10 +1,25 @@
 import assert from 'node:assert/strict';
-import { test } from 'node:test';
+import { afterEach, test } from 'node:test';
+import { mkdtemp, rm } from 'node:fs/promises';
+import os from 'node:os';
+import path from 'node:path';
 import { apply, name } from '../lib/index.js';
 
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+const testHosts = new Set();
 
-function createHost(exitCode = 0, extraConfig = {}) {
+afterEach(async () => {
+  for (const host of testHosts) {
+    for (const cleanup of [...host.cleanups].reverse()) await cleanup();
+    await rm(host.stateDir, { recursive: true, force: true });
+  }
+  testHosts.clear();
+});
+
+async function createHost(exitCode = 0, extraConfig = {}) {
+  const stateDir = await mkdtemp(path.join(os.tmpdir(), 'dsh-test-pilot-test-'));
+
+  const persistenceFilePath = path.join(stateDir, 'state.json');
   const listeners = new Map();
   const spawnCalls = [];
   const cleanups = [];
@@ -45,8 +60,10 @@ function createHost(exitCode = 0, extraConfig = {}) {
     appended: [],
     append(type, data) { this.appended.push({ type, data }); },
   };
-  const plugin = apply(context, { runner: 'pytest', command: 'pytest -q', ...extraConfig });
-  return { context, listeners, spawnCalls, session, cleanups, plugin };
+  const plugin = apply(context, { runner: 'pytest', command: 'pytest -q', ...extraConfig }, { persistenceFilePath });
+  const host = { context, listeners, spawnCalls, session, cleanups, plugin, persistenceFilePath, stateDir };
+  testHosts.add(host);
+  return host;
 }
 
 function startTurn(listeners, session, turn = 1) {
@@ -75,7 +92,7 @@ function assertV4DurableMessage(event) {
 }
 
 test('debounces writes and returns a fresh completed result in additionalContexts', async () => {
-  const host = createHost();
+  const host = await createHost();
   const { listeners, session } = host;
   const signal = new AbortController().signal;
   startTurn(listeners, session);
@@ -114,7 +131,7 @@ test('debounces writes and returns a fresh completed result in additionalContext
 });
 
 test('the first red result appends one user-visible transition report', async () => {
-  const host = createHost(1);
+  const host = await createHost(1);
   const { listeners, session, plugin } = host;
   session.workspace.cwd = '/repo-red-transition-' + Date.now() + '-' + Math.random();
   startTurn(listeners, session);
@@ -132,7 +149,7 @@ test('the first red result appends one user-visible transition report', async ()
 });
 
 test('aborting exec.signal cancels a pending debounce before subprocess spawn', async () => {
-  const host = createHost();
+  const host = await createHost();
   const { listeners, session } = host;
   const controller = new AbortController();
   startTurn(listeners, session);
@@ -147,7 +164,7 @@ test('aborting exec.signal cancels a pending debounce before subprocess spawn', 
 });
 
 test('turn/end flushes a pending run immediately as a safety net', async () => {
-  const host = createHost();
+  const host = await createHost();
   const { listeners, session } = host;
   const signal = new AbortController().signal;
   startTurn(listeners, session, 7);
@@ -162,7 +179,7 @@ test('turn/end flushes a pending run immediately as a safety net', async () => {
 });
 
 test('full run scope bypasses related-test narrowing after a detected change', async () => {
-  const host = createHost(0, { runScope: 'full' });
+  const host = await createHost(0, { runScope: 'full' });
   const { listeners, session } = host;
   startTurn(listeners, session, 2);
   const signal = new AbortController().signal;
