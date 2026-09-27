@@ -32,3 +32,18 @@
 - No production credential was copied or requested. The live E2E remains untested; this decision is not approval to merge or publish.
 - PR #21 remains WIP and awaits a separate explicit owner merge decision.
 - Remaining: final artifact/security review, commit/push, one PR, owner merge approval, publish 0.1.2, exact-registry production acceptance, public showcase update, then evidence-based closure of all 12 issues.
+
+## Session: 2026-09-27 — issue block #8, #24–#32
+- Scope: dsh-test-pilot only; one Gitea branch/worktree/PR; package version remains 0.1.2; no self-healing.
+- Read project AGENTS.md, design contract, product spec, reuse notes, ADR and existing task/findings/progress records. Gitea main is clean at 7ae1d0f after fetch; no open PRs.
+- Inspected existing project worktrees. Preserved them; five are clean and merged-PR #16 worktree has a package-lock version synchronization only. Owner chose investigation; evidence shows it is stale (0.1.1 branch versus current 0.1.2 main), so it is excluded and untouched.
+- Created feat/issues-8-24-32-batch from fresh origin/main. No product source has been changed yet.
+- Next: inspect the live public GitHub tree and verify source filtering with official Git documentation, then post the start comment and implement.
+
+### Public mirror baseline
+- Inspected the live public GitHub repository in the browser. It is a curated tree, not a full DEV/Gitea mirror; internal docs and OpenWiki are already absent, while package-lock.json remains.
+- Latest visible source commit is 748f3b8 and links the sanitized fixture-host change to Gitea issue #24.
+
+- Verified export-ignore semantics against the official Git archive documentation; it filters archives, not repository tree files.
+- Gitea issue #24 identifies the precise source-tree defect: public main 748f3b8 and v0.1.2 tag tree 7a95888 both include package-lock.json. Existing public ancestry is intentionally retained; fix forward only.
+- Planning notes are ready to commit in the assigned worktree. Next: start issue comments, inspect relevant plugin code/contracts, then implement the ten issue slices; no public GitHub writes until the publication gate.

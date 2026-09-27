@@ -1,17 +1,15 @@
-# Task Plan: dsh-test-pilot open issues / 0.1.2
+# Task Plan: dsh-test-pilot issues #8, #24–#32
 
 ## Goal
-Complete all 12 open Gitea issues in one branch/PR, preserve the agreed no-self-healing scope, pass release gates, and publish 0.1.2.
+Complete the ten assigned open issues in one Gitea branch/worktree/PR, preserve the no-self-healing boundary, and prepare the already selected 0.1.2 release only after all gates and approvals.
 
 ## Next Step
-Request explicit owner approval to merge PR #21. The owner accepted live session/header-chip
-E2E as an unverified release limitation; do not describe it as tested or treat that
-acceptance as merge or publication approval.
+Review the exact public GitHub tree and verify source-sanitization options against Git documentation; finalize issue mapping before code changes.
 
 ## Current Phase
-Phase 4 — final verification
+Phase 1 — preflight and research
 
-## Phases
+## Previous block phases (#1, #4–#11, #13, #19, #20)
 ### Phase 1: Requirements and discovery
 - [x] Confirm open issue set and owner scope
 - [x] Clean/sync root and create a worktree from fresh origin/main
@@ -62,5 +60,27 @@ Phase 4 — final verification
 | PowerShell expansion/quoting issues in earlier commands | 1 | Corrected invocation; no repository data changed |
 | JS isolate lacked btoa/TextEncoder | 2 | Use manual in-memory UTF-8 encoder |
 
-## Current status
-Node.js parser (#13) and npm image inclusion (#20) are implemented; 84/84 unit tests pass. Exact candidate was installed on MiniPC, component load and auth guard checked, then candidate/package removed. Service remains active and original plugins unchanged. Owner accepted that live session/header-chip E2E remains unverified because no test API key exists; do not copy production credentials. PR #21 awaits explicit merge approval. Publication, production verification, showcase update, and issue closure remain.
+## Previous block status
+Previous 0.1.2 backlog implementation and MiniPC candidate acceptance were recorded in the prior plan. PR #21 and visual-evidence PR #23 are merged into the current main baseline. The current assignment is a new ten-issue block; its tests, public mirror update, production acceptance and release are not yet complete.
+
+## Active block: issues #8, #24–#32
+
+- [ ] Confirm exact issue state and public mirror tree; finalize public-source allowlist.
+- [ ] Implement all ten issues in this worktree; add focused regression tests.
+- [ ] Run clean-install/full-suite/preflight/package audit and required isolated-server acceptance.
+- [ ] Commit completed slices, push one branch, open one PR, report evidence on each issue.
+- [ ] Await merge approval; proceed through release gates and close issues only with evidence.
+
+### Issue checklist
+- [ ] #8 — current ConfigForms settings registration and contract tests.
+- [ ] #24 — reproducible sanitized public tree; preserve internal Gitea docs and OpenWiki.
+- [ ] #25 — clean install succeeds with startup-import dependencies declared correctly.
+- [ ] #26 — persistence tests use injected temporary state and never touch default DSH home.
+- [ ] #27 — runner paths are workspace-bounded and network fetch is not implicit.
+- [ ] #28 — output is truncated at valid UTF-8 byte boundaries.
+- [ ] #29 — locale identity/fallback preserves externally provided locales.
+- [ ] #30 — theme-token/shared UI styling and light/dark visual verification.
+- [ ] #31 — cohesive host-module extraction with behavior preserved.
+- [ ] #32 — ConnectionFetchRoute registration matches the installed type contract.
+
+**Status:** preflight underway; no product changes yet.
