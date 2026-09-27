@@ -1,7 +1,7 @@
 # Active implementation plan — dsh-test-pilot issues #8, #24–#32
 
 ## Goal
-Complete the ten assigned open issues in one Gitea branch, worktree and PR, preserve the accepted no-self-healing boundary, then run release checks for the already selected 0.1.2 version. Keep development records in Gitea; public writes and deployment remain behind approval gates.
+Complete the ten assigned open issues in one Gitea branch, worktree and PR, preserving the accepted no-self-healing boundary. The Gitea history for #24 confirms that public 0.1.2 was already released before this issue batch; do not republish it or change the package version in this implementation PR. Resolve the next release version only after merge and release checks. Keep public writes and deployment behind approval gates.
 
 ## Issue-level scope and acceptance
 
@@ -54,7 +54,7 @@ Complete the ten assigned open issues in one Gitea branch, worktree and PR, pres
 2. **Implementation** — implement #8, #24–#32 on this branch; add issue-specific regression tests and update English/Chinese docs where user behavior or settings change. **Status: in progress; #24 publication-tree verification remains gated on the approved sanitized publication, while #31 implementation is complete.**
 3. **Verification** — full suite is 97/97; clean-install npm ci and plugin preflight pass (FAIL=0/WARN=6). Still run MiniPC candidate/runtime/UI acceptance and verify the exact sanitized GitHub tag tree after publication approval. Do not claim an unverified check passed.
 4. **Gitea handoff** — self-review, commit completed slices, push via the Codex Git wrapper, open one PR, record evidence in each issue, and await explicit owner merge approval.
-5. **Release** — keep version 0.1.2; after merge and required test-server/production checks, obtain final public release approval before any public GitHub/tag/npm write. Do not close issues until acceptance and per-issue evidence are complete.
+5. **Release** — public 0.1.2 already exists per Gitea #24 history. After merge and required test-server/production checks, determine the next valid version and obtain final public release approval before any public GitHub/tag/npm write. Do not close issues until acceptance and per-issue evidence are complete.
 
 ## Decisions and guardrails
 - Preserve and exclude the existing dirty config-forms worktree: its sole package-lock diff synchronizes stale branch version 0.1.1; current origin/main is 0.1.2.

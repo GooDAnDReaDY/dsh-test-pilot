@@ -82,3 +82,8 @@
 - Full npm test: 97/97 passed. Plugin preflight: FAIL=0, WARN=6; package dry-run: 25 files, 151172 packed bytes, README trio included, internal plans/lockfile excluded.
 - A transient ENOTEMPTY in post-execute test cleanup exposed that test hosts were not disposing plugin effects. Test teardown now calls registered disposers before deleting each owned temporary state directory. Focused file passed three consecutive runs; full suite and preflight passed afterward.
 - No MiniPC, merge, production, or public release acceptance has been performed yet.
+
+
+## 2026-09-27 — release-version reconciliation
+- Authenticated Gitea #24 history states that public GitHub release/tag v0.1.2 and npm @goodandready/dsh-test-pilot@0.1.2 were already published before this ten-issue batch was opened. The current batch branch still carries package version 0.1.2.
+- Do not republish the existing version. No package version change was made in this implementation batch; determine the next valid release version after merge and release checks.

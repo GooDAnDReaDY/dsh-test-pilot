@@ -1,7 +1,7 @@
 # Task Plan: dsh-test-pilot issues #8, #24–#32
 
 ## Goal
-Complete the ten assigned open issues in one Gitea branch/worktree/PR, preserve the no-self-healing boundary, and prepare the already selected 0.1.2 release only after all gates and approvals.
+Complete the ten assigned open issues in one Gitea branch/worktree/PR, preserving the no-self-healing boundary. Gitea #24 confirms public 0.1.2 is already released; resolve the next valid version only after merge and release checks.
 
 ## Next Step
 Run clean-install/preflight/package audit, then commit remaining slices, post issue evidence and open one PR. MiniPC acceptance follows merge.
@@ -69,7 +69,7 @@ Previous 0.1.2 backlog implementation and MiniPC candidate acceptance were recor
 - [x] Implement issue changes and focused regression tests in this worktree; #24 actual sanitized public-tree/tag update remains approval-gated.
 - [ ] Run clean-install/full-suite/preflight/package audit and required isolated-server acceptance.
 - [ ] Commit completed slices, push one branch, open one PR, report evidence on each issue.
-- [ ] Await merge approval; proceed through release gates and close issues only with evidence.
+- [ ] Await merge approval; proceed through release gates, select a valid unreleased version, and close issues only with evidence.
 
 ### Issue checklist
 - [x] #8 — migrate to live ConfigForms settings policy and update contract tests; MiniPC verification pending.
@@ -83,4 +83,4 @@ Previous 0.1.2 backlog implementation and MiniPC candidate acceptance were recor
 - [x] #31 — extract cohesive host-event and agent-tool modules with focused behavior-contract tests; runtime acceptance pending.
 - [x] #32 — explicitly declare requestBody:none and assert the route contract; installed-runtime acceptance pending.
 
-**Status:** implementation underway; 97/97 tests pass. Re-run clean install/preflight/package audit after final changes (last preflight: FAIL=0/WARN=6); MiniPC runtime/visual acceptance remains.
+**Status:** implementation underway; 97/97 tests pass. Clean npm ci and full tests passed; preflight FAIL=0/WARN=6 and package audit passed. MiniPC runtime/visual acceptance remains. The published 0.1.2 version must not be reused for a new public release.
