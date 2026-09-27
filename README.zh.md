@@ -126,6 +126,7 @@ workspaceRules:
     enabled: true
     runner: auto
     command: ""
+    allowNetworkFetch: false
 cwd: ""
 timeoutMs: 120000
 maxOutputBytes: 200000
@@ -137,7 +138,7 @@ maxOutputBytes: 200000
 | runScope | string | auto | auto 在安全时选择相关测试，否则运行完整套件；full 在每次检测到更改后运行完整套件 |
 | runner | string | auto | auto、pytest、jest、vitest、go、rust/cargo、tap、tsc、deno 或 npm |
 | command | string | 空 | 可选的可执行文件和参数；拒绝 shell 语法 |
-| workspaceRules | array | [] | 按工作区配置路径、启用状态、runner 和可选命令 |
+| workspaceRules | array | [] | 按工作区配置路径、启用状态、runner、可选命令和下载策略 |
 | cwd | string | 空 | 明确的工作区；为空时使用 session 工作区 |
 | timeoutMs | number | 120000 | 最大执行时间，单位毫秒 |
 | maxOutputBytes | number | 200000 | 每个输出流的收集上限 |
@@ -147,6 +148,8 @@ maxOutputBytes: 200000
 `go.mod`、`Cargo.toml` 和 `deno.json`（或 `deno.jsonc`）。找不到支持的 runner 时，自动运行保持
 静默。旧版顶层 `runner` 和 `command` 设置仍作为当前工作区根目录的规则。
 对于无法识别的框架，请显式设置 `runner`；`command` 会覆盖自动检测出的默认命令。
+内置 npm 命令默认离线。工作区规则可设置 `allowNetworkFetch: true`，允许从固定的
+`https://registry.npmjs.org` 下载缺失的包；该选项默认关闭，且不改变自定义命令。
 
 ## 自动测试选择
 
