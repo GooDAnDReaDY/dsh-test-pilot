@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.3
+
+### Improved
+- Automatic runs respect workspace boundaries and remain offline by default; package fetching is an explicit per-workspace opt-in.
+- Settings, session status and locale handling follow current DSH client contracts.
+- Test output truncation stays within the configured UTF-8 byte limit.
+
+### Fixed
+- Required DSH peers are declared for clean installs; persistence and status-route contracts have regression coverage.
+
 ## 0.1.2
 
 ### Fixed
