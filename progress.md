@@ -46,4 +46,5 @@
 
 - Verified export-ignore semantics against the official Git archive documentation; it filters archives, not repository tree files.
 - Gitea issue #24 identifies the precise source-tree defect: public main 748f3b8 and v0.1.2 tag tree 7a95888 both include package-lock.json. Existing public ancestry is intentionally retained; fix forward only.
-- Planning notes are ready to commit in the assigned worktree. Next: start issue comments, inspect relevant plugin code/contracts, then implement the ten issue slices; no public GitHub writes until the publication gate.
+- Issue #28 implementation: output truncation now keeps a contiguous UTF-8-safe suffix and never exceeds the configured byte budget, including Cyrillic/CJK/emoji characters. Focused runner tests pass 7/7.
+- Next: fix the actual DSH ConfigForms lifecycle for #8, and the clean-install missing required schema peer for #25; no public GitHub writes until the publication gate.

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { runTestCommand } from '../lib/runner.js';
+import { runTestCommand, trimUtf8Tail } from '../lib/runner.js';
 function fakeSubprocess({ output = '', exitCode = 0, delayMs = 0, reject = false } = {}) {
   return {
     spawn() {
@@ -19,6 +19,18 @@ function fakeSubprocess({ output = '', exitCode = 0, delayMs = 0, reject = false
     },
   };
 }
+test('bounds UTF-8 output without splitting ASCII, Cyrillic, CJK, or emoji characters', () => {
+  const output = 'AЯ汉😀Z';
+  assert.equal(trimUtf8Tail(output, 8), '汉😀Z');
+  assert.equal(trimUtf8Tail(output, 6), '😀Z');
+  assert.equal(trimUtf8Tail(output, 4), 'Z');
+  for (const limit of [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]) {
+    const trimmed = trimUtf8Tail(output, limit);
+    assert.ok(Buffer.byteLength(trimmed) <= limit);
+    assert.doesNotMatch(trimmed, /\uFFFD/);
+  }
+});
+
 test('runs through argv and returns structured result', async () => {
   const result = await runTestCommand({
     subprocess: fakeSubprocess({ output: '================ 3 passed in 0.01s ================' }),
