@@ -59,6 +59,20 @@ test('chooses the longest matching workspace path rule', async () => {
   assert.equal(result.runner, 'go');
 });
 
+test('network fetching is opt-in per matching workspace and pinned to npmjs', async () => {
+  const fs = makeFs({ 'package.json': JSON.stringify({ scripts: { test: 'jest' } }) });
+  const safe = await resolveWorkspaceTestConfig(fs, '/repo', {
+    workspaceRules: [{ path: '/repo', runner: 'jest', allowNetworkFetch: false }],
+  });
+  assert.equal(safe.allowNetworkFetch, false);
+  assert.match(safe.command, /--offline/);
+  const optedIn = await resolveWorkspaceTestConfig(fs, '/repo', {
+    workspaceRules: [{ path: '/repo', runner: 'jest', allowNetworkFetch: true }],
+  });
+  assert.equal(optedIn.allowNetworkFetch, true);
+  assert.equal(optedIn.command, 'npm exec --yes --registry=https://registry.npmjs.org -- jest --runInBand');
+});
+
 test('keeps the legacy runner as a rule at the current workspace root', async () => {
   const result = await resolveWorkspaceTestConfig(null, '/repo', { runner: 'pytest', command: 'pytest -q' });
   assert.deepEqual({ runner: result.runner, command: result.command }, { runner: 'pytest', command: 'pytest -q' });
