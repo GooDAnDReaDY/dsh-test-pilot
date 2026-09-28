@@ -79,6 +79,13 @@ public access. Gitea остаётся источником разработки,
 проверенный main/tag публикуется только после обязательных тестов и
 production-приёмки.
 
+Public GitHub release trees use an explicit allowlist: root README.md,
+README.zh.md, README.ru.md, LICENSE, CHANGELOG.md, package.json,
+cordis.patch.yml, lib/**, media/** and test/**. Exclude package-lock.json,
+.gitignore, AGENTS.md, index.md, planning/state files, docs/** and all
+infrastructure/configuration material. Corrected trees are ordinary
+forward-only commits; historical public tags are never rewritten.
+
 ## Visual acceptance
 
 Визуальная приёмка карточки выполняется на реальной DSH composition в светлой и

@@ -50,3 +50,7 @@
 - Keep the source-tree change as a normal forward commit; do not rewrite public history. Archive/package filtering may supplement, but not replace, public tree sanitization.
 - Live Gitea issue #24 reproduction: public GitHub main `748f3b8a448084fd2e96edda2dffe9e77a5ab59a` and public v0.1.2 tag tree `7a95888d5b2f6804761f4b486de0888e21e74b83` both include `package-lock.json`.
 - The owner already accepted the existing public ancestry unchanged. Do not rewrite it, force-push, or broaden this into a full mirror redesign. The requested outcome is to remove the lockfile from public main and the next public tag with an ordinary forward change. `export-ignore` cannot satisfy that because it only filters archives.
+- 2026-09-28: GitHub public main remains 748f3b8a448084fd2e96edda2dffe9e77a5ab59a and includes package-lock.json. Build the next public tree from the explicit allowlist in docs/design/DESIGN.md; retain historical ancestry/tags.
+- 2026-09-28: #30 is implemented in Gitea main and package 0.1.3. The client uses injected DSH DisclosureRow and `--dsw-elevation-panel`; the contract test verifies both. The preflight icon warning is heuristic.
+- 2026-09-28: Initial tests lacked worktree node_modules; standard npm ci installed declared peers, then the repeat suite passed 97/97 without tracked lockfile edits.
+- 2026-09-28: MiniPC installed the exact published 0.1.3 tarball; the helper returned DSH_TEST_OK. Four pre-existing missing plugin patch entries remain untouched.

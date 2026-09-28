@@ -84,3 +84,10 @@ Previous 0.1.2 backlog implementation and MiniPC candidate acceptance were recor
 - [x] #32 ‚Äî explicitly declare requestBody:none and assert the route contract; installed-runtime acceptance pending.
 
 **Status:** implementation underway; 97/97 tests pass. Clean npm ci and full tests passed; preflight FAIL=0/WARN=6 and package audit passed. MiniPC runtime/visual acceptance remains. The published 0.1.2 version must not be reused for a new public release.
+
+## Continuation+ßuÁ‚ùÁT 2026-09-28 ∫w^~)ﬁt outstanding #24 and #30
+- Scope is dsh-test-pilot only. Branch fix/issues-24-30-public-0.1.4 starts at current origin/main 24ff778.
+- Gitea main already contains the #30 DisclosureRow/theme-token implementation; no duplicate runtime change is planned.
+- npm version 0.1.4 is being prepared because 0.1.3 is already published. The release is source-tree/documentation-only.
+- Current checks: npm ci succeeded; 97/97 tests pass; preflight FAIL=0/WARN=6, including heuristic warnings for injected styles, native DisclosureRow, and tracked internal files.
+- Exact published 0.1.3 tarball matched SHA-256 4b38e382564a3b6590e3d9efe83b49c164eae3d95c449fcdcf4aa1dd22df2c04 and installed on MiniPC; helper returned DSH_TEST_OK. Existing missing entries for unrelated plugins were not modified.
