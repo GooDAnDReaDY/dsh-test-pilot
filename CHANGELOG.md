@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.4
+
+### Security
+- Publish the GitHub source tree from an explicit product allowlist; exclude package-lock.json and internal project material from the new tag tree.
+
+### Notes
+- Runtime behavior is unchanged from 0.1.3.
+
 ## 0.1.3
 
 ### Improved

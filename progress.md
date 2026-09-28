@@ -87,3 +87,12 @@
 ## 2026-09-27 â€” release-version reconciliation
 - Authenticated Gitea #24 history states that public GitHub release/tag v0.1.2 and npm @goodandready/dsh-test-pilot@0.1.2 were already published before this ten-issue batch was opened. The current batch branch still carries package version 0.1.2.
 - Do not republish the existing version. No package version change was made in this implementation batch; determine the next valid release version after merge and release checks.
+
+## 2026-09-28 ºw^~)Þt resume remaining #24/#30
+- Read required root/repository instructions, workflow matrix, design contract, previous task plan/findings/progress, and release/public-tree policy.
+- DEV root was clean and behind origin/main; fetched then fast-forwarded only. Created fix/issues-24-30-public-0.1.4 from main 24ff778. Other historical worktrees were left untouched.
+- Confirmed #24/#30 are the only open issues. Public GitHub main remains 748f3b8 and contains package-lock.json. Posted progress comments to both issues.
+- #30 source is already in main: native DisclosureRow, DSH elevation token, and contract test. No duplicate runtime edit.
+- First npm test lacked node_modules and failed module imports; npm ci succeeded, then npm test passed 97/97.
+- Preflight: FAIL=0/WARN=6. Hardcoded colors, peer/route identity and package-size checks pass; reviewed DisclosureRow warning as heuristic.
+- npm pack 0.1.3 produced 25 files / 151300 bytes; SHA-256 matches the published artifact. Installed exact package-only candidate on MiniPC; helper returned INSTALLED and DSH_TEST_OK.
