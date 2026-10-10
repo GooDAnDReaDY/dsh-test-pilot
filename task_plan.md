@@ -1,93 +1,37 @@
-# Task Plan: dsh-test-pilot issues #8, #24–#32
+# Task Plan: dsh-test-pilot issues #36, #37, #38, #39, #40, #41, #42
 
 ## Goal
-Complete the ten assigned open issues in one Gitea branch/worktree/PR, preserving the no-self-healing boundary. Gitea #24 confirms public 0.1.2 is already released; resolve the next valid version only after merge and release checks.
+Resolve all 7 open issues (#36, #37, #38, #39, #40, #41, #42) in Gitea repository `goodandready/dsh-test-pilot`, verify with full automated test suite (103/103 tests pass) and preflight check, create PR for review and prepare release.
 
 ## Next Step
-Run clean-install/preflight/package audit, then commit remaining slices, post issue evidence and open one PR. MiniPC acceptance follows merge.
+Commit changes, push branch, open PR, and report status to user.
 
 ## Current Phase
-Phase 3 — implementation and verification
+Phase 3 — Review, PR and release preparation
 
-## Previous block phases (#1, #4–#11, #13, #19, #20)
-### Phase 1: Requirements and discovery
-- [x] Confirm open issue set and owner scope
-- [x] Clean/sync root and create a worktree from fresh origin/main
-- [x] Read project requirements, design contract, and current implementation
+### Phase 1: Requirements and Discovery
+- [x] Read AGENTS.md, DESIGN.md, index.md, package.json
+- [x] Analyze all 7 open issues: #36 (DSH 0.2 seats), #37 (reactive settings), #38 (allowNetworkFetch / npmExec), #39 (duplicate report event shim), #40 (record.paths count cap), #41 (missing devDependencies in clean checkout), #42 (auto-run safety for auto-detected commands)
+- [x] Update Gitea issue labels, titles, and post start progress comments
 - **Status:** complete
 
-### Phase 2: Plan
-- [x] Map all 12 open issues to implementation and evidence
-- [x] Record detailed versioned plan in docs/plans
-- [x] Keep self-healing excluded
+### Phase 2: Implementation and Local Verification
+- [x] #36: Register `plugins.item` and `plugins.row.config` in `lib/client.js`, remove deprecated `settings.plugin.item`
+- [x] #37: Subscribe to `loader/volatile-update` and `settings/document-updated` in `lib/index.js` to update `getConfig` reactively without restart
+- [x] #38: Verify `defaultCommand` runner allowlist (`jest`, `vitest`, `tsc`) and document `allowNetworkFetch` opt-in boundary
+- [x] #39: Document backward-compatibility shim for `test-pilot/report` and `dsh-test-pilot/report` events in `lib/index.js`
+- [x] #40: Add `MAX_RECORD_PATHS = 1000` count cap to `addSnapshotPath` in `lib/index.js` to prevent unbounded Set growth
+- [x] #41: Add devDependencies to `package.json`, document `npm ci && npm test` workflow
+- [x] #42: Guard automatic background runs against auto-detected repository commands without a workspace rule; track `commandSource`
+- [x] Add comprehensive test suite in `test/issues-36-42.test.mjs`
+- [x] Verify `npm test` passes completely: 103/103 pass, 0 fail
+- [x] Verify `preflight.sh` passes: FAIL=0, exit code 0
+- [x] Verify `npm pack --dry-run`: package under limits, clean composition
 - **Status:** complete
 
-### Phase 3: Implementation
-- [x] Existing implementation covers #4–#11; prior composition and MiniPC evidence recorded in Gitea
-- [x] Fix #13 Node.js built-in test summary parsing
-- [x] Fix #20 package allowlist/image
-- [ ] Resolve #19 through the 0.1.2 publish/deploy path
-- [x] Resolve #1 according to agreed MVP boundary; later roadmap remains deferred
-
-### Phase 4: Verification
-- [x] Unit suite, existing composition/API/UI tests, and MiniPC package install/load check
-- [x] README trio synchronized; versioned release plan recorded
-- [x] npm test 84/84; preflight FAIL=0/WARN=7; package contents reviewed
-- [x] Exact candidate installed then removed from isolated MiniPC; service active and pre-existing plugins preserved
-- [x] Owner accepted missing live-session/session-chip E2E evidence as a release limitation (2026-09-23); no test key supplied and no production credentials copied
-- **Status:** limitation accepted; live E2E remains unverified; local/package checks complete
-
-### Phase 5: PR and release
-- [ ] One PR, request explicit merge approval
-- [ ] Merge after approval; test exact main candidate on MiniPC and production
-- [ ] Publish public 0.1.2, install exact registry version, verify production
-- [ ] Update goodandready.app through its Gitea workflow
-- [ ] Close issues only with evidence; cleanup own branch/worktree
-- **Status:** pending
-
-## Decisions
-| Decision | Rationale |
-|---|---|
-| One branch/worktree/PR/release | Owner requested all current Gitea issues together |
-| Keep package version 0.1.2 | Owner explicitly chose the release version |
-| No self-healing | Existing owner agreement and project AGENTS.md |
-| Preserve unrelated worktrees and dirty lockfile | No authorization to modify or discard them |
-
-## Errors
-| Error | Attempt | Resolution |
-|---|---:|---|
-| Root initially showed untracked .worktrees | 1 | Owner approved local exclude; contents preserved |
-| PowerShell expansion/quoting issues in earlier commands | 1 | Corrected invocation; no repository data changed |
-| JS isolate lacked btoa/TextEncoder | 2 | Use manual in-memory UTF-8 encoder |
-
-## Previous block status
-Previous 0.1.2 backlog implementation and MiniPC candidate acceptance were recorded in the prior plan. PR #21 and visual-evidence PR #23 are merged into the current main baseline. The current assignment is a new ten-issue block; its tests, public mirror update, production acceptance and release are not yet complete.
-
-## Active block: issues #8, #24–#32
-
-- [x] Confirm issue state and inspect the public mirror baseline; #24 allowlist/filter implementation remains.
-- [x] Implement issue changes and focused regression tests in this worktree; #24 actual sanitized public-tree/tag update remains approval-gated.
-- [ ] Run clean-install/full-suite/preflight/package audit and required isolated-server acceptance.
-- [ ] Commit completed slices, push one branch, open one PR, report evidence on each issue.
-- [ ] Await merge approval; proceed through release gates, select a valid unreleased version, and close issues only with evidence.
-
-### Issue checklist
-- [x] #8 — migrate to live ConfigForms settings policy and update contract tests; MiniPC verification pending.
-- [ ] #24 — explicit sanitized GitHub source allowlist is documented; public tree must omit package-lock.json and internal files, verified at publication gate.
-- [x] #25 — declare required startup peers and verify current clean install; MiniPC compatibility matrix still pending.
-- [x] #26 — persistence tests use isolated temporary state-file paths; suite passes.
-- [x] #27 — validate manual paths through DSH filesystem containment; npm defaults are offline with per-workspace explicit fetch opt-in; tests pass.
-- [x] #28 — UTF-8-safe bounded output suffix; implementation committed as 0ad1144.
-- [x] #29 — preserve locale identity and consult slot translator before built-in fallback; runtime verification pending.
-- [x] #30 — use DSH DisclosureRow and elevation token; automated contract test passes. Light/dark visual acceptance pending.
-- [x] #31 — extract cohesive host-event and agent-tool modules with focused behavior-contract tests; runtime acceptance pending.
-- [x] #32 — explicitly declare requestBody:none and assert the route contract; installed-runtime acceptance pending.
-
-**Status:** implementation underway; 97/97 tests pass. Clean npm ci and full tests passed; preflight FAIL=0/WARN=6 and package audit passed. MiniPC runtime/visual acceptance remains. The published 0.1.2 version must not be reused for a new public release.
-
-## Continuation+�u���T 2026-09-28 �w^~)�t outstanding #24 and #30
-- Scope is dsh-test-pilot only. Branch fix/issues-24-30-public-0.1.4 starts at current origin/main 24ff778.
-- Gitea main already contains the #30 DisclosureRow/theme-token implementation; no duplicate runtime change is planned.
-- npm version 0.1.4 is being prepared because 0.1.3 is already published. The release is source-tree/documentation-only.
-- Current checks: npm ci succeeded; 97/97 tests pass; preflight FAIL=0/WARN=6, including heuristic warnings for injected styles, native DisclosureRow, and tracked internal files.
-- Exact published 0.1.3 tarball matched SHA-256 4b38e382564a3b6590e3d9efe83b49c164eae3d95c449fcdcf4aa1dd22df2c04 and installed on MiniPC; helper returned DSH_TEST_OK. Existing missing entries for unrelated plugins were not modified.
+### Phase 3: PR, Release and Prod Acceptance
+- [ ] Commit changes via `git-antigravity`
+- [ ] Push branch `fix/resolve-open-issues-36-42` to Gitea origin
+- [ ] Create Gitea PR linking issues #36, #37, #38, #39, #40, #41, #42
+- [ ] Present PR to user for merge approval
+- [ ] Prepare release v0.1.5 after merge

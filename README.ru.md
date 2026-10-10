@@ -239,6 +239,7 @@ result. result.output и failure messages нужно считать недове
 ## Разработка
 
 ~~~bash
+npm ci
 npm test
 npm pack --dry-run
 ~~~

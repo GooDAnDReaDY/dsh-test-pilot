@@ -219,6 +219,7 @@ Host 为兼容性发送两个名称：
 ## 开发
 
 ~~~bash
+npm ci
 npm test
 npm pack --dry-run
 ~~~
