@@ -1,5 +1,19 @@
 # Changelog
 
+## 0.1.5
+
+### Fixed
+- Register settings card on DSH 0.2 live seats `plugins.item` and `plugins.row.config`, removing retired `settings.plugin.item` (#36).
+- Apply configuration updates reactively via `loader/volatile-update` and `settings/document-updated` without requiring DSH restart (#37).
+- Prevent unbounded memory growth by capping recorded file mutation paths at 1000 per turn before falling back to full-suite run (#40).
+- Add devDependencies to `package.json` ensuring clean-checkout test execution passes (`npm ci && npm test`) (#41).
+- Prevent automatic background test execution of untrusted commands detected from repository manifests without an explicit user workspace rule (#42).
+
+### Improved
+- Document backward-compatibility shim for `test-pilot/report` and `dsh-test-pilot/report` events (#39).
+- Clarify `allowNetworkFetch` runner allowlist restrictions and opt-in boundaries (#38).
+- Include `commandSource` in structured run output and test pilot status reporting (#42).
+
 ## 0.1.4
 
 ### Security
