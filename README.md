@@ -249,6 +249,7 @@ tests and dashboard UI are roadmap work.
 ## Development
 
 ~~~bash
+npm ci
 npm test
 npm pack --dry-run
 ~~~
