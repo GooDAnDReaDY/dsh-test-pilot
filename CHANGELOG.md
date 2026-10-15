@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.6
+
+### Fixed
+- Fix settings namespace (`NS = 'dsh-test-pilot'`) matching profile entry ID so `settingsSvc.describe().find()` correctly resolves live configuration (#45).
+- Add safe call guard for `settingsSvc.describe?.()?.find?.(...)` avoiding uncaught exceptions when describe returns null (#45).
+- Add single-execution re-entry guard for `settings.configure({ auto: false })` (#45).
+
 ## 0.1.5
 
 ### Fixed
