@@ -16,7 +16,9 @@ runner/command/cwd по умолчанию, timeout, лимит вывода и 
 
 Карточка настроек зарегистрирована в штатных слотах DSH 0.2: plugins.item (список) и plugins.row.config (настройки строки). Устаревший слот settings.plugin.item удалён.
 Чип в conversation.session.header.actions показывает статус текущей сессии и
-открывает краткую сводку. Read-only контракт описан в ADR 0002.
+открывает краткую сводку. Настройка showHeaderIndicator (по умолчанию включена)
+позволяет скрыть чип в шапке сессии; при скрытии чипа статус и результаты тестов
+остаются доступны через сводку в карточке настроек плагина и агентские инструменты. Read-only контракт описан в ADR 0002.
 Changed 2026-09-18: прежнее решение отложить чип до отдельной проверки авторизации
 заменено после подтверждения Connection auth и Host-visible Session Controller.
 
@@ -38,7 +40,8 @@ no-tests. Зелёные результаты и пропуски никогда
 
 ## Native DSH and Route Policy
 
-Карточка настроек регистрируется в слотах plugins.item и plugins.row.config (ключ `@goodandready/dsh-test-pilot#dsh-test-pilot`). Настройки обновляются реактивно при получении событий loader/volatile-update и settings/document-updated без необходимости перезапуска DSH. Чип целевой поверхности использует
+Карточка настроек регистрируется в слотах plugins.item и plugins.row.config (ключ `@goodandready/dsh-test-pilot#dsh-test-pilot`). Настройки обновляются реактивно при получении событий loader/volatile-update и settings/document-updated без необходимости перезапуска DSH.
+Видимость индикатора в шапке (showHeaderIndicator) управляется на лету через configForms; при отключении чип в шапке скрывается, а альтернативный доступ к результатам сохраняется в карточке настроек. Чип целевой поверхности использует
 conversation.session.header.actions, но не реализуется до принятия
 авторизационного контракта endpoint по issue #11. Не добавлять навигационный
 пункт или отдельную веб-панель.
