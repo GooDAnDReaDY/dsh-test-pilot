@@ -38,7 +38,8 @@ test('MVP does not contain self-healing or automatic git mutation', () => {
 });
 
 test('host config exposes live fields to native settings and uses the current settings policy API', () => {
-  assert.equal((source.match(/\.volatile\(\)/g) || []).length, 8);
+  assert.equal((source.match(/\.volatile\(\)/g) || []).length, 9);
+  assert.match(source, /showHeaderIndicator/);
   assert.match(source, /settings\?\.configure/);
   assert.match(source, /settings\.configure\(\{ auto: false \}, ctx\.fiber\)/);
   assert.doesNotMatch(source, /settings\.register\(/);

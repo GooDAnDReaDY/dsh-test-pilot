@@ -162,3 +162,38 @@ test('status response is workspace-bound, no-store, and excludes run internals',
   assert.equal(JSON.stringify(body).includes('PRIVATE_OUTPUT'), false);
   assert.equal(JSON.stringify(body).includes('PRIVATE_TEST'), false);
 });
+
+test('status handler returns latest run when sessionId is omitted and rejects unexpected parameters', async () => {
+  const latestRun = {
+    status: 'passed',
+    runId: RUN_ID,
+    runner: 'vitest',
+    startedAt: NOW - 200,
+    finishedAt: NOW,
+    durationMs: 200,
+    counts: { total: 5, passed: 5 },
+  };
+  const handler = createStatusHandler({
+    resolveSessionWorkspace: async () => null,
+    state: {
+      ready: Promise.resolve(),
+      latest: () => latestRun,
+    },
+    fs: {},
+    getConfig: () => ({ enabled: true }),
+    now: () => NOW,
+  });
+
+  // Request without sessionId: returns latest run
+  const response = await handler(new Request('http://dsh.local/api/dsh-test-pilot/status'));
+  assert.equal(response.status, 200);
+  const body = await response.json();
+  assert.equal(body.status, 'passed');
+  assert.equal(body.correlationId, RUN_ID);
+  assert.equal(body.counts.passed, 5);
+
+  // Request with invalid/unexpected parameter: returns 400
+  const invalidResponse = await handler(new Request('http://dsh.local/api/dsh-test-pilot/status?foo=bar'));
+  assert.equal(invalidResponse.status, 400);
+  assert.equal((await invalidResponse.json()).error, 'invalid-request');
+});
