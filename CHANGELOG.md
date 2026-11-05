@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.1.7
+
+### Added
+- Add `showHeaderIndicator` setting in `Config` and settings card allowing users to hide the test status indicator in conversation header actions (#48).
+- Add `StatusSummary` section to the plugin settings card providing persistent, direct access to the latest test run results even when the header indicator is hidden (#48).
+- Support status queries without `sessionId` in `createStatusHandler`, returning the latest test run snapshot for settings panel inspection (#48).
+
 ## 0.1.6
 
 ### Fixed
