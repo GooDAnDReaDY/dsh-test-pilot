@@ -20,10 +20,10 @@ test('Issue #51: Config schema supports showHeaderIndicator and handles boolean 
   assert.equal(unwrap(trueConf.showHeaderIndicator), true);
 });
 
-test('Issue #51: client.js defines resolveConfigScope with fallback to NS and ctx.get', () => {
+test('Issue #51: client.js defines resolveConfigScope with fallback to ctx.get', () => {
   assert.ok(clientSource.includes('function resolveConfigScope('));
   assert.ok(clientSource.includes('ctx.configForms.get(SETTINGS_ENTRY_ID)'));
-  assert.ok(clientSource.includes('forms.get(SETTINGS_ENTRY_ID) || forms.get(NS)'));
+  assert.ok(clientSource.includes('forms.get(SETTINGS_ENTRY_ID)'));
 });
 
 test('Issue #51: client.js SettingsForm, PluginCard, and SessionStatus use activeCtx fallback', () => {
