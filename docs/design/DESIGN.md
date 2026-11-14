@@ -42,7 +42,8 @@ no-tests. Зелёные результаты и пропуски никогда
 
 Карточка настроек регистрируется в слотах plugins.item и plugins.row.config (ключ `@goodandready/dsh-test-pilot#dsh-test-pilot`). Настройки обновляются реактивно при получении событий loader/volatile-update и settings/document-updated без необходимости перезапуска DSH.
 Видимость индикатора в шапке (showHeaderIndicator) управляется на лету через configForms; при отключении чип в шапке скрывается, а альтернативный доступ к результатам сохраняется в карточке настроек.
-Changed 2026-11-05 (Issue #51): Настройка showHeaderIndicator персистентно сохраняется и поддерживается в средах DSH Web и DSH Desktop (включая Windows). Поиск форм конфигурации устойчив к идентификаторам dsh-test-pilot и @goodandready/dsh-test-pilot, гарантирует корректную работу при перезапуске приложения и хоста DSH, и не скрывает и не затрагивает основные навигационные кнопки интерфейса (Remote, Tasks, Kanban, Scheduled Tasks). Чип целевой поверхности использует
+Changed 2026-11-05 (Issue #51): Настройка showHeaderIndicator персистентно сохраняется и поддерживается в средах DSH Web и DSH Desktop (включая Windows). Гарантирует корректную работу при перезапуске приложения и хоста DSH, и не скрывает и не затрагивает основные навигационные кнопки интерфейса (Remote, Tasks, Kanban, Scheduled Tasks).
+Changed 2026-11-15 (Issue #57): Собственный идентификатор записи настроек плагина в клиенте строго приведен к dsh-test-pilot (соответствует cordis.patch.yml и NS в lib/index.js). Клиент запрашивает только dsh-test-pilot, исключая ошибочные запросы по имени пакета @goodandready/dsh-test-pilot к configForms. Чип целевой поверхности использует
 conversation.session.header.actions, но не реализуется до принятия
 авторизационного контракта endpoint по issue #11. Не добавлять навигационный
 пункт или отдельную веб-панель.
