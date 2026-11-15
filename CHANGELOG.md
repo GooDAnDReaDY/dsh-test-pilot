@@ -1,5 +1,24 @@
 # Changelog
 
+## 0.1.10
+
+### Added
+- Add standardized `deploy.sh` script for updating the plugin in the DSH web profile and verifying service health (#56).
+- Add `scripts/publish-github.sh` for publishing a sanitized public mirror tree to GitHub, keeping test fixtures, planning documents, and operational scripts in upstream Gitea (#56).
+
+### Security
+- Update transitive dependency `zod` to 4.6.7 in `package-lock.json` resolving GHSA-mrhx-c7xc-m3w5 (#54).
+
+## 0.1.9
+
+### Fixed
+- Use cordis entry ID `dsh-test-pilot` instead of scoped package name for client namespace and configForms query (#57).
+
+## 0.1.8
+
+### Fixed
+- Ensure persistent header indicator setting resolves across heterogeneous DSH environments (#51).
+
 ## 0.1.7
 
 ### Added
